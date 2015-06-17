@@ -219,7 +219,10 @@ namespace Rock.Data
                 // If entity was added or modified, update the Created/Modified fields
                 if ( entry.State == EntityState.Added || entry.State == EntityState.Modified )
                 {
-                    if ( !TriggerWorkflows( entity, WorkflowTriggerType.PreSave, personAlias ) )
+                    // instead of passing "true" the trigger model and UI would support a
+                    // on-value-changed checkbox (or perhaps it should be the default/only behavior)
+                    // and its value would be passed in to the onValueChange
+                    if ( !TriggerWorkflows( contextItem, true, WorkflowTriggerType.PreSave, personAlias ) )
                     {
                         return null;
                     }
@@ -262,7 +265,7 @@ namespace Rock.Data
                 }
                 else if ( entry.State == EntityState.Deleted )
                 {
-                    if ( !TriggerWorkflows( entity, WorkflowTriggerType.PreDelete, personAlias ) )
+                    if ( !TriggerWorkflows( contextItem, WorkflowTriggerType.PreDelete, personAlias ) )
                     {
                         return null;
                     }
@@ -316,24 +319,32 @@ namespace Rock.Data
             {
                 if ( item.State == EntityState.Detached || item.State == EntityState.Deleted )
                 {
-                    TriggerWorkflows( item.Entity, WorkflowTriggerType.PostDelete, personAlias );
+                    TriggerWorkflows( item, WorkflowTriggerType.PostDelete, personAlias );
                 }
                 else
                 {
-                    TriggerWorkflows( item.Entity, WorkflowTriggerType.ImmediatePostSave, personAlias );
-                    TriggerWorkflows( item.Entity, WorkflowTriggerType.PostSave, personAlias );
+                    TriggerWorkflows( item, WorkflowTriggerType.ImmediatePostSave, personAlias );
+                    TriggerWorkflows( item, WorkflowTriggerType.PostSave, personAlias );
                 }
             }
         }
 
-        private bool TriggerWorkflows( IEntity entity, WorkflowTriggerType triggerType, PersonAlias personAlias )
+        private bool TriggerWorkflows( ContextItem item, WorkflowTriggerType triggerType, PersonAlias personAlias )
         {
+            return TriggerWorkflows( item, false, triggerType, personAlias );
+        }
+
+        private bool TriggerWorkflows( ContextItem item, bool onValueChange, WorkflowTriggerType triggerType, PersonAlias personAlias )
+        {
+            IEntity entity = item.Entity;
             Dictionary<string, PropertyInfo> properties = null;
 
             using ( var rockContext = new RockContext() )
             {
                 var workflowTypeService = new WorkflowTypeService( rockContext );
                 var workflowService = new WorkflowService( rockContext );
+
+                var dbEntity = item.DbEntityEntry;
 
                 foreach ( var trigger in TriggerCache.Triggers( entity.TypeName, triggerType ).Where( t => t.IsActive == true ) )
                 {
@@ -346,7 +357,25 @@ namespace Rock.Data
                             properties = new Dictionary<string, PropertyInfo>();
                             foreach ( PropertyInfo propertyInfo in entity.GetType().GetProperties() )
                             {
-                                properties.Add( propertyInfo.Name.ToLower(), propertyInfo );
+                                // Only check if the value has changed and the property can be checked. 
+                                if ( onValueChange && ( !propertyInfo.GetGetMethod().IsVirtual || propertyInfo.Name == "Id" || propertyInfo.Name == "Guid" || propertyInfo.Name == "Order" ) )
+                                {
+                                    var dbPropertyEntry = dbEntity.Property( propertyInfo.Name );
+                                    if ( dbPropertyEntry != null )
+                                    {
+                                        var currentValue = dbEntity.State == EntityState.Deleted ? string.Empty : dbPropertyEntry.CurrentValue.ToStringSafe();
+                                        var originalValue = dbEntity.State == EntityState.Added ? string.Empty : dbPropertyEntry.OriginalValue.ToStringSafe();
+                                        // Only add the property if it changed from its original value
+                                        if ( currentValue != originalValue )
+                                        {
+                                            properties.Add( propertyInfo.Name.ToLower(), propertyInfo );
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    properties.Add( propertyInfo.Name.ToLower(), propertyInfo );
+                                }
                             }
                         }
 
