@@ -139,7 +139,9 @@
     <Compile Include="Controllers\CodeGenerated\EventItemSchedulesController.cs" />
     <Compile Include="Controllers\CodeGenerated\EventItemsController.cs" />
     <Compile Include="Controllers\CodeGenerated\FinancialGatewaysController.cs" />
+    <Compile Include="Controllers\CodeGenerated\FollowingEventsController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingsController.cs" />
+    <Compile Include="Controllers\CodeGenerated\FollowingSuggestionsController.cs" />
     <Compile Include="Controllers\CodeGenerated\GroupMemberRequirementsController.cs" />
     <Compile Include="Controllers\CodeGenerated\GroupMemberWorkflowTriggersController.cs" />
     <Compile Include="Controllers\CodeGenerated\GroupRequirementsController.cs" />

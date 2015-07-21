@@ -240,6 +240,11 @@
     <Compile Include="Field\Types\EventCalendarFieldType.cs" />
     <Compile Include="Field\Types\NoteTypesFieldType.cs" />
     <Compile Include="Field\Types\NoteTypeFieldType.cs" />
+    <Compile Include="Follow\Person\BirthdayEvent.cs" />
+    <Compile Include="Follow\SuggestionComponent.cs" />
+    <Compile Include="Follow\EventComponent.cs" />
+    <Compile Include="Follow\SuggestionContainer.cs" />
+    <Compile Include="Follow\EventContainer.cs" />
     <Compile Include="Jobs\SendRegistrationReminders.cs" />
     <Compile Include="Jobs\SendGroupRequirementsNotification.cs" />
     <Compile Include="Model\CodeGenerated\ConnectionActivityTypeService.cs" />
@@ -310,6 +315,8 @@
     <Compile Include="Model\BenevolenceResult.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\CodeGenerated\FollowingEventService.cs" />
+    <Compile Include="Model\CodeGenerated\FollowingSuggestionService.cs" />
     <Compile Include="Model\ConnectionOpportunityCampus.cs" />
     <Compile Include="Model\ConnectionRequest.cs" />
     <Compile Include="Model\ConnectionOpportunityGroup.cs" />
@@ -374,6 +381,8 @@
     <Compile Include="Model\EventCalendarItem.cs" />
     <Compile Include="Model\EventItem.cs" />
     <Compile Include="Model\EventItemCampus.cs" />
+    <Compile Include="Model\FollowingEvent.cs" />
+    <Compile Include="Model\FollowingSuggestion.cs" />
     <Compile Include="Model\FinancialGateway.cs" />
     <Compile Include="Model\FinancialBatchService.Partial.cs" />
     <Compile Include="Model\EntitySet.cs" />
