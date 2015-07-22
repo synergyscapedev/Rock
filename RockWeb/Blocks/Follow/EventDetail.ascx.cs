@@ -29,7 +29,7 @@ using Rock.Web;
 using Rock.Web.Cache;
 using Rock.Web.UI;
 
-namespace RockWeb.Blocks.Following
+namespace RockWeb.Blocks.Follow
 {
     [DisplayName( "Event Detail" )]
     [Category( "Follow" )]
@@ -104,6 +104,7 @@ namespace RockWeb.Blocks.Following
                 followingEvent.IsActive = cbIsActive.Checked;
                 followingEvent.Description = tbDescription.Text;
                 followingEvent.EntityTypeId = cpEventType.SelectedEntityTypeId;
+                followingEvent.SendOnWeekends = !cbSendOnFriday.Checked;
 
                 rockContext.SaveChanges();
 
@@ -132,8 +133,8 @@ namespace RockWeb.Blocks.Following
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void cpEventType_SelectedIndexChanged( object sender, EventArgs e )
         {
-            var event = new FollowingEvent { Id = EventId, EntityTypeId = cpEventType.SelectedEntityTypeId };
-            BuildDynamicControls( event, true );
+            var followingEvent = new FollowingEvent { Id = EventId, EntityTypeId = cpEventType.SelectedEntityTypeId };
+            BuildDynamicControls( followingEvent, true );
         }
 
         #endregion
@@ -146,22 +147,22 @@ namespace RockWeb.Blocks.Following
         /// <param name="eventId">The event identifier.</param>
         public void ShowDetail( int eventId )
         {
-            FollowingEvent event = null;
+            FollowingEvent followingEvent = null;
 
             bool editAllowed = IsUserAuthorized( Authorization.EDIT );
 
             if ( !eventId.Equals( 0 ) )
             {
-                event = new FollowingEventService( new RockContext() ).Get( eventId );
-                editAllowed = editAllowed || event.IsAuthorized( Authorization.EDIT, CurrentPerson );
+                followingEvent = new FollowingEventService( new RockContext() ).Get( eventId );
+                editAllowed = editAllowed || followingEvent.IsAuthorized( Authorization.EDIT, CurrentPerson );
             }
 
-            if ( event == null )
+            if ( followingEvent == null )
             {
-                event = new FollowingEvent { Id = 0, IsActive = true };
+                followingEvent = new FollowingEvent { Id = 0, IsActive = true };
             }
 
-            EventId = event.Id;
+            EventId = followingEvent.Id;
 
             bool readOnly = false;
 
@@ -174,11 +175,11 @@ namespace RockWeb.Blocks.Following
 
             if ( readOnly )
             {
-                ShowReadonlyDetails( event );
+                ShowReadonlyDetails( followingEvent );
             }
             else
             {
-                ShowEditDetails( event );
+                ShowEditDetails( followingEvent );
             }
         }
 
@@ -186,54 +187,50 @@ namespace RockWeb.Blocks.Following
         /// Shows the edit details.
         /// </summary>
         /// <param name="event">The event.</param>
-        private void ShowEditDetails( FollowingEvent event )
+        private void ShowEditDetails( FollowingEvent followingEvent )
         {
-            if ( event.Id == 0 )
+            if ( followingEvent.Id == 0 )
             {
                 lActionTitle.Text = ActionTitle.Add( FollowingEvent.FriendlyTypeName ).FormatAsHtmlTitle();
             }
             else
             {
-                lActionTitle.Text = event.Name.FormatAsHtmlTitle();
+                lActionTitle.Text = followingEvent.Name.FormatAsHtmlTitle();
             }
 
-            hlInactive.Visible = !event.IsActive;
+            hlInactive.Visible = !followingEvent.IsActive;
 
             SetEditMode( true );
 
-            tbName.Text = event.Name;
-            cbIsActive.Checked = event.IsActive;
-            tbDescription.Text = event.Description;
-            cpEventType.SetValue( event.EntityType != null ? event.EntityType.Guid.ToString().ToUpper() : string.Empty );
-            tpBatchTimeOffset.SelectedTime = event.GetBatchTimeOffset();
+            tbName.Text = followingEvent.Name;
+            cbIsActive.Checked = followingEvent.IsActive;
+            tbDescription.Text = followingEvent.Description;
+            cpEventType.SetValue( followingEvent.EntityType != null ? followingEvent.EntityType.Guid.ToString().ToUpper() : string.Empty );
+            cbSendOnFriday.Checked = !followingEvent.SendOnWeekends;
 
-            BuildDynamicControls( event, true );
+            BuildDynamicControls( followingEvent, true );
         }
 
         /// <summary>
         /// Shows the readonly details.
         /// </summary>
         /// <param name="event">The event.</param>
-        private void ShowReadonlyDetails( FollowingEvent event )
+        private void ShowReadonlyDetails( FollowingEvent followingEvent )
         {
             SetEditMode( false );
 
-            lActionTitle.Text = event.Name.FormatAsHtmlTitle();
-            hlInactive.Visible = !event.IsActive;
-            lEventDescription.Text = event.Description;
+            lActionTitle.Text = followingEvent.Name.FormatAsHtmlTitle();
+            hlInactive.Visible = !followingEvent.IsActive;
+            lEventDescription.Text = followingEvent.Description;
 
             DescriptionList descriptionList = new DescriptionList();
 
-            if ( event.EntityType != null )
+            if ( followingEvent.EntityType != null )
             {
-                descriptionList.Add( "Event Type", event.EntityType.Name );
+                descriptionList.Add( "Event Type", followingEvent.EntityType.Name );
             }
 
-            var timeSpan = event.GetBatchTimeOffset();
-            if ( timeSpan.Ticks > 0 )
-            {
-                descriptionList.Add( "Batch Time Offset", timeSpan.ToString() );
-            }
+            descriptionList.Add( "Send Weekend Notices on Friday", followingEvent.SendOnWeekends ? "No" : "Yes" );
 
             lblMainDetails.Text = descriptionList.Html;
         }
@@ -252,10 +249,10 @@ namespace RockWeb.Blocks.Following
 
         private void BuildDynamicControls( FollowingEvent followingEvent, bool SetValues )
         {
-            EventEntityTypeId = FollowingEvent.EntityTypeId;
+            EventEntityTypeId = followingEvent.EntityTypeId;
             if ( followingEvent.EntityTypeId.HasValue )
             {
-                var EventComponentEntityType = EntityTypeCache.Read( FollowingEvent.EntityTypeId.Value );
+                var EventComponentEntityType = EntityTypeCache.Read( followingEvent.EntityTypeId.Value );
                 var EventEntityType = EntityTypeCache.Read( "Rock.Model.FollowingEvent " );
                 if ( EventComponentEntityType != null && EventEntityType != null )
                 {

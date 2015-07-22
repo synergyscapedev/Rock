@@ -59,7 +59,7 @@ namespace Rock.Model
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the event entity type identifier.
+        /// Gets or sets the event component identifier.
         /// </summary>
         /// <value>
         /// The event entity type identifier.
@@ -89,6 +89,24 @@ namespace Rock.Model
         /// </value>
         [DataMember]
         public bool SendOnWeekends { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last check.
+        /// </summary>
+        /// <value>
+        /// The last check.
+        /// </value>
+        [DataMember]
+        public DateTime? LastCheckDateTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this event is required. If not, followers will be able to optionally select if they want to be notified of this event
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is notice required; otherwise, <c>false</c>.
+        /// </value>
+        [DataMember]
+        public bool IsNoticeRequired { get; set; }
 
         #endregion
 

@@ -4,12 +4,13 @@
     <ContentTemplate>
 
         <asp:Panel ID="pnlDetails" CssClass="panel panel-block" runat="server">
-           
+
             <asp:HiddenField ID="hfEventId" runat="server" />
 
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="fa fa-credit-card"></i> <asp:Literal ID="lActionTitle" runat="server" /></h1>
-                
+                <h1 class="panel-title"><i class="fa fa-credit-card"></i>
+                    <asp:Literal ID="lActionTitle" runat="server" /></h1>
+
                 <div class="panel-labels">
                     <Rock:HighlightLabel ID="hlInactive" runat="server" LabelType="Danger" Text="Inactive" />
                 </div>
@@ -37,8 +38,7 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <Rock:DataTextBox ID="tbName" runat="server"
-                                SourceTypeName="Rock.Model.FollowingEvent, Rock" PropertyName="Name" />
+                            <Rock:RockTextBox ID="tbName" runat="server" Label="Name" />
                         </div>
                         <div class="col-md-6">
                             <Rock:RockCheckBox ID="cbIsActive" runat="server" Label="Active" />
@@ -47,18 +47,18 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <Rock:DataTextBox ID="tbDescription" runat="server"
-                                SourceTypeName="Rock.Model.FollowingEvent, Rock" PropertyName="Description" TextMode="MultiLine" Rows="3" />
+                            <Rock:RockTextBox ID="tbDescription" runat="server" Label="Description" TextMode="MultiLine" Rows="3" />
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6"> 
-                            <Rock:ComponentPicker ID="cpEventType" runat="server" Label="Event Type" Required="true" ContainerType="Rock.Following.EventContainer" AutoPostBack="true" OnSelectedIndexChanged="cpEventType_SelectedIndexChanged" />
-                            <Rock:TimePicker ID="tpBatchTimeOffset" runat="server" Label="Batch Time Offset" 
-                                Help="By default online payments will be grouped into batches with a start time 12:00:00 AM. However if the payment event groups transactions into batches based on a different time, this offset can specified so that Rock will use the same time when creating batches for online transactions" />
+                        <div class="col-md-6">
+                            <Rock:ComponentPicker ID="cpEventType" runat="server" Label="Event Type" Required="true" ContainerType="Rock.Follow.EventContainer"
+                                AutoPostBack="true" OnSelectedIndexChanged="cpEventType_SelectedIndexChanged" />
+                            <Rock:RockCheckBox ID="cbSendOnFriday" runat="server" Label="Send Weekend Notices on Friday" Text="Yes"
+                                Help="Should any notices that would normally be sent on a weekend be sent of preceding Friday instead?" />
                         </div>
-                        <div class="col-md-6">                
+                        <div class="col-md-6">
                             <asp:PlaceHolder ID="phAttributes" runat="server" EnableViewState="false" />
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                         <asp:LinkButton ID="btnCancel" runat="server" AccessKey="c" Text="Cancel" CssClass="btn btn-link" CausesValidation="false" OnClick="btnCancel_Click" />
                     </div>
 
-            </div>
+                </div>
 
             </div>
 

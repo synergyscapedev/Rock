@@ -172,7 +172,7 @@ namespace RockWeb.Blocks.Follow
             var entityType = entityTypeObject as EntityType;
             if ( entityType != null )
             {
-                string name = Rock.Following.EventContainer.GetComponentName( entityType.Name );
+                string name = Rock.Follow.EventContainer.GetComponentName( entityType.Name );
                 if ( !string.IsNullOrWhiteSpace(name))
                 {
                     return name.SplitCase();
