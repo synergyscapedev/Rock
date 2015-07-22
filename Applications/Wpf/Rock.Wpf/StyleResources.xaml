@@ -210,7 +210,7 @@
                 <ControlTemplate TargetType="{x:Type Label}">
                     <Border CornerRadius="4,4,4,4"
                             BorderThickness="1"
-                            BorderBrush="#bce8f1"
+                            BorderBrush="#d6e9c6"
                             Padding="14,8,35,8"
                             Background="#dff0d8"
                             Margin="10">
@@ -781,6 +781,17 @@
     <Style x:Key="textboxStyle"
            TargetType="{x:Type Control}"
            BasedOn="{StaticResource ResourceKey=inputStyleBase}">
+    </Style>
+
+    <Style x:Key="textboxStyleMultiline"
+           TargetType="{x:Type TextBox}"
+           BasedOn="{StaticResource ResourceKey=textboxStyle}">
+        <Setter Property="Height"
+                Value="48" />
+        <Setter Property="AcceptsReturn"
+                Value="True" />
+        <Setter Property="TextWrapping"
+                Value="Wrap" />
     </Style>
 
     <Style x:Key="textboxStyleError"
