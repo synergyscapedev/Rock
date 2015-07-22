@@ -207,6 +207,7 @@ namespace RockWeb.Blocks.Follow
             tbDescription.Text = followingEvent.Description;
             cpEventType.SetValue( followingEvent.EntityType != null ? followingEvent.EntityType.Guid.ToString().ToUpper() : string.Empty );
             cbSendOnFriday.Checked = !followingEvent.SendOnWeekends;
+            cbRequireNotification.Checked = followingEvent.IsNoticeRequired;
 
             BuildDynamicControls( followingEvent, true );
         }
@@ -230,6 +231,7 @@ namespace RockWeb.Blocks.Follow
                 descriptionList.Add( "Event Type", followingEvent.EntityType.Name );
             }
 
+            descriptionList.Add( "Require Notification", followingEvent.IsNoticeRequired ? "Yes" : "No" );
             descriptionList.Add( "Send Weekend Notices on Friday", followingEvent.SendOnWeekends ? "No" : "Yes" );
 
             lblMainDetails.Text = descriptionList.Html;

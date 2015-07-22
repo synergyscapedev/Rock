@@ -55,6 +55,8 @@
                         <div class="col-md-6">
                             <Rock:ComponentPicker ID="cpEventType" runat="server" Label="Event Type" Required="true" ContainerType="Rock.Follow.EventContainer"
                                 AutoPostBack="true" OnSelectedIndexChanged="cpEventType_SelectedIndexChanged" />
+                            <Rock:RockCheckBox ID="cbRequireNotification" runat="server" Label="Notice Required" Text="Yes"
+                                Help="Select this option to force user to get notified of this event for people they follow. Unselect this option if users should be able to decide whether to get notified or not." />
                             <Rock:RockCheckBox ID="cbSendOnFriday" runat="server" Label="Send Weekend Notices on Friday" Text="Yes"
                                 Help="Should any notices that would normally be sent on a weekend be sent of preceding Friday instead?" />
                         </div>
