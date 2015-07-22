@@ -105,6 +105,7 @@ namespace RockWeb.Blocks.Follow
                 followingEvent.Description = tbDescription.Text;
                 followingEvent.EntityTypeId = cpEventType.SelectedEntityTypeId;
                 followingEvent.SendOnWeekends = !cbSendOnFriday.Checked;
+                followingEvent.IsNoticeRequired = cbRequireNotification.Checked;
 
                 rockContext.SaveChanges();
 
