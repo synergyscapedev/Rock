@@ -22,6 +22,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 using System.Runtime.Serialization;
 
+using Rock.Attribute;
 using Rock.Data;
 using Rock.Follow;
 using Rock.Web.Cache;
@@ -29,19 +30,19 @@ using Rock.Web.Cache;
 namespace Rock.Model
 {
     /// <summary>
-    /// Represents a following suggestion
+    /// Represents a following event
     /// </summary>
-    [Table( "FollowingSuggestion" )]
+    [Table( "FollowingEventType" )]
     [DataContract]
-    public partial class FollowingSuggestion : Model<FollowingSuggestion>
+    public partial class FollowingEventType : Model<FollowingEventType>
     {
         #region Entity Properties
 
         /// <summary>
-        /// Gets or sets the (internal) Name of the FollowingSuggestion. This property is required.
+        /// Gets or sets the (internal) Name of the FollowingEvent. This property is required.
         /// </summary>
         /// <value>
-        /// A <see cref="System.String"/> representing the (internal) name of the FollowingSuggestion.
+        /// A <see cref="System.String"/> representing the (internal) name of the FollowingEvent.
         /// </value>
         [Required]
         [MaxLength( 50 )]
@@ -49,19 +50,19 @@ namespace Rock.Model
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the user defined description of the FollowingSuggestion.
+        /// Gets or sets the user defined description of the FollowingEvent.
         /// </summary>
         /// <value>
-        /// A <see cref="System.String"/> representing the user defined description of the FollowingSuggestion.
+        /// A <see cref="System.String"/> representing the user defined description of the FollowingEvent.
         /// </value>
         [DataMember]
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the suggestion entity type identifier.
+        /// Gets or sets the event component identifier.
         /// </summary>
         /// <value>
-        /// The suggestion entity type identifier.
+        /// The event entity type identifier.
         /// </value>
         [DataMember]
         public int? EntityTypeId { get; set; }
@@ -80,15 +81,42 @@ namespace Rock.Model
         }
         private bool _isActive = true;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [send on weekends].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [send on weekends]; otherwise, <c>false</c>.
+        /// </value>
+        [DataMember]
+        public bool SendOnWeekends { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last check.
+        /// </summary>
+        /// <value>
+        /// The last check.
+        /// </value>
+        [DataMember]
+        public DateTime? LastCheckDateTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this event is required. If not, followers will be able to optionally select if they want to be notified of this event
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is notice required; otherwise, <c>false</c>.
+        /// </value>
+        [DataMember]
+        public bool IsNoticeRequired { get; set; }
+
         #endregion
 
         #region Virtual Properties
 
         /// <summary>
-        /// Gets or sets the type of the suggestion entity.
+        /// Gets or sets the type of the event entity.
         /// </summary>
         /// <value>
-        /// The type of the suggestion entity.
+        /// The type of the event entity.
         /// </value>
         [DataMember]
         public virtual EntityType EntityType { get; set; }
@@ -98,9 +126,9 @@ namespace Rock.Model
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FollowingSuggestion"/> class.
+        /// Initializes a new instance of the <see cref="FollowingEventType"/> class.
         /// </summary>
-        public FollowingSuggestion()
+        public FollowingEventType()
         {
             IsActive = true;
         }
@@ -110,17 +138,17 @@ namespace Rock.Model
         #region Public Methods
 
         /// <summary>
-        /// Gets the suggestion component.
+        /// Gets the event component.
         /// </summary>
         /// <returns></returns>
-        public virtual SuggestionComponent GetSuggestionComponent()
+        public virtual EventComponent GetEventComponent()
         {
             if ( EntityTypeId.HasValue )
             {
                 var entityType = EntityTypeCache.Read( EntityTypeId.Value );
                 if ( entityType != null )
                 {
-                    return SuggestionContainer.GetComponent( entityType.Name );
+                    return EventContainer.GetComponent( entityType.Name );
                 }
             }
 
@@ -128,10 +156,10 @@ namespace Rock.Model
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this FollowingSuggestion.
+        /// Returns a <see cref="System.String" /> that represents this FollowingEvent.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this FollowingSuggestion.
+        /// A <see cref="System.String" /> that represents this FollowingEvent.
         /// </returns>
         public override string ToString()
         {
@@ -145,14 +173,14 @@ namespace Rock.Model
     #region Entity Configuration
 
     /// <summary>
-    /// FollowingSuggestion Configuration class.
+    /// FollowingEvent Configuration class.
     /// </summary>
-    public partial class FollowingSuggestionConfiguration : EntityTypeConfiguration<FollowingSuggestion>
+    public partial class FollowingEventConfiguration : EntityTypeConfiguration<FollowingEventType>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FollowingSuggestionConfiguration"/> class.
+        /// Initializes a new instance of the <see cref="FollowingEventConfiguration"/> class.
         /// </summary>
-        public FollowingSuggestionConfiguration()
+        public FollowingEventConfiguration()
         {
             this.HasRequired( g => g.EntityType).WithMany().HasForeignKey( a => a.EntityTypeId).WillCascadeOnDelete( false );
         }

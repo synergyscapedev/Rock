@@ -26,10 +26,10 @@ using Rock.Model;
 namespace Rock.Rest.Controllers
 {
     /// <summary>
-    /// FollowingEvents REST API
+    /// FollowingEventSubscriptions REST API
     /// </summary>
-    public partial class FollowingEventsController : Rock.Rest.ApiController<Rock.Model.FollowingEvent>
+    public partial class FollowingEventSubscriptionsController : Rock.Rest.ApiController<Rock.Model.FollowingEventSubscription>
     {
-        public FollowingEventsController() : base( new Rock.Model.FollowingEventService( new Rock.Data.RockContext() ) ) { } 
+        public FollowingEventSubscriptionsController() : base( new Rock.Model.FollowingEventSubscriptionService( new Rock.Data.RockContext() ) ) { } 
     }
 }

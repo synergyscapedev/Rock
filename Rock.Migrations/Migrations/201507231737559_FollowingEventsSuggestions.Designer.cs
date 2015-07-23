@@ -13,7 +13,7 @@ namespace Rock.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201507221250025_FollowingEventsSuggestions"; }
+            get { return "201507231737559_FollowingEventsSuggestions"; }
         }
         
         string IMigrationMetadata.Source

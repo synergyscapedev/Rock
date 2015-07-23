@@ -24,7 +24,7 @@ using Rock.Attribute;
 using Rock.Model;
 using Rock.Web.Cache;
 
-namespace Rock.Follow
+namespace Rock.Follow.Event
 {
     /// <summary>
     /// Person birthday following Event
@@ -34,7 +34,7 @@ namespace Rock.Follow
     [ExportMetadata( "ComponentName", "PersonBirthday" )]
 
     [IntegerField( "Lead Days", "The number of days prior to birthday that notification should be sent.", false, 5, "", 0)]
-    public class PersonBirthdayEvent : EventComponent
+    public class PersonBirthday : EventComponent
     {
         #region Event Component Implementation
 
@@ -54,7 +54,7 @@ namespace Rock.Follow
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public override bool HasEventHappened( FollowingEvent followingEvent, IEntity entity, DateTime lastCheck )
+        public override bool HasEventHappened( FollowingEventType followingEvent, IEntity entity, DateTime lastCheck )
         {
             var person = entity as Person;
             if ( person != null && person.BirthDay.HasValue && person.BirthMonth.HasValue )

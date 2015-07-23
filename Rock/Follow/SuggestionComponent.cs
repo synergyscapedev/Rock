@@ -69,7 +69,7 @@ namespace Rock.Follow
         /// Loads the attributes for the following suggestion.
         /// </summary>
         /// <param name="followingSuggestion">The following suggestion.</param>
-        public void LoadAttributes( FollowingSuggestion followingSuggestion )
+        public void LoadAttributes( FollowingSuggestionType followingSuggestion )
         {
             followingSuggestion.LoadAttributes();
         }
@@ -120,7 +120,7 @@ namespace Rock.Follow
         /// <param name="followingSuggestion">The following suggestion.</param>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        protected string GetAttributeValue( FollowingSuggestion followingSuggestion, string key )
+        protected string GetAttributeValue( FollowingSuggestionType followingSuggestion, string key )
         {
             if ( followingSuggestion.AttributeValues == null )
             {

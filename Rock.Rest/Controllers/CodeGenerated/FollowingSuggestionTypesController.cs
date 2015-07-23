@@ -26,10 +26,10 @@ using Rock.Model;
 namespace Rock.Rest.Controllers
 {
     /// <summary>
-    /// FollowingSuggestions REST API
+    /// FollowingSuggestionTypes REST API
     /// </summary>
-    public partial class FollowingSuggestionsController : Rock.Rest.ApiController<Rock.Model.FollowingSuggestion>
+    public partial class FollowingSuggestionTypesController : Rock.Rest.ApiController<Rock.Model.FollowingSuggestionType>
     {
-        public FollowingSuggestionsController() : base( new Rock.Model.FollowingSuggestionService( new Rock.Data.RockContext() ) ) { } 
+        public FollowingSuggestionTypesController() : base( new Rock.Model.FollowingSuggestionTypeService( new Rock.Data.RockContext() ) ) { } 
     }
 }

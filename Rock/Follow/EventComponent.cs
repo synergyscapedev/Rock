@@ -71,7 +71,7 @@ namespace Rock.Follow
         /// Loads the attributes for the following event.
         /// </summary>
         /// <param name="followingEvent">The following event.</param>
-        public void LoadAttributes( FollowingEvent followingEvent )
+        public void LoadAttributes( FollowingEventType followingEvent )
         {
             followingEvent.LoadAttributes();
         }
@@ -122,7 +122,7 @@ namespace Rock.Follow
         /// <param name="followingEvent">The following event.</param>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        protected string GetAttributeValue( FollowingEvent followingEvent, string key )
+        protected string GetAttributeValue( FollowingEventType followingEvent, string key )
         {
             if ( followingEvent.AttributeValues == null )
             {
@@ -155,6 +155,6 @@ namespace Rock.Follow
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public abstract bool HasEventHappened( FollowingEvent followingEvent, IEntity entity, DateTime lastCheck );
+        public abstract bool HasEventHappened( FollowingEventType followingEvent, IEntity entity, DateTime lastCheck );
     }
 }

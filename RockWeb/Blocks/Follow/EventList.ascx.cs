@@ -110,7 +110,7 @@ namespace RockWeb.Blocks.Follow
         protected void rGridEvent_Delete( object sender, RowEventArgs e )
         {
             var rockContext = new RockContext();
-            var eventService = new FollowingEventService( rockContext );
+            var eventService = new FollowingEventTypeService( rockContext );
             var followingEvent = eventService.Get( e.RowKeyId );
             if ( followingEvent != null )
             {
@@ -149,7 +149,7 @@ namespace RockWeb.Blocks.Follow
         {
             using ( var rockContext = new RockContext() )
             {
-                var qry = new FollowingEventService( rockContext )
+                var qry = new FollowingEventTypeService( rockContext )
                     .Queryable( "EntityType" ).AsNoTracking();
 
                 SortProperty sortProperty = rGridEvent.SortProperty;

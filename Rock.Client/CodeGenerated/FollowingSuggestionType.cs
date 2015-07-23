@@ -27,18 +27,18 @@ using System.Collections.Generic;
 namespace Rock.Client
 {
     /// <summary>
-    /// Base client model for GroupMemberWorkflowTrigger that only includes the non-virtual fields. Use this for PUT/POSTs
+    /// Base client model for FollowingSuggestionType that only includes the non-virtual fields. Use this for PUT/POSTs
     /// </summary>
-    public partial class GroupMemberWorkflowTriggerEntity
+    public partial class FollowingSuggestionTypeEntity
     {
         /// <summary />
         public int Id { get; set; }
 
         /// <summary />
-        public int? GroupId { get; set; }
+        public string Description { get; set; }
 
         /// <summary />
-        public int? GroupTypeId { get; set; }
+        public int? EntityTypeId { get; set; }
 
         /// <summary />
         public bool IsActive { get; set; }
@@ -47,19 +47,7 @@ namespace Rock.Client
         public string Name { get; set; }
 
         /// <summary />
-        public int Order { get; set; }
-
-        /// <summary />
-        public Rock.Client.Enums.GroupMemberWorkflowTriggerType TriggerType { get; set; }
-
-        /// <summary />
-        public string TypeQualifier { get; set; }
-
-        /// <summary />
-        public string WorkflowName { get; set; }
-
-        /// <summary />
-        public int WorkflowTypeId { get; set; }
+        public string ReasonNote { get; set; }
 
         /// <summary />
         public Guid Guid { get; set; }
@@ -68,21 +56,17 @@ namespace Rock.Client
         public string ForeignId { get; set; }
 
         /// <summary>
-        /// Copies the base properties from a source GroupMemberWorkflowTrigger object
+        /// Copies the base properties from a source FollowingSuggestionType object
         /// </summary>
         /// <param name="source">The source.</param>
-        public void CopyPropertiesFrom( GroupMemberWorkflowTrigger source )
+        public void CopyPropertiesFrom( FollowingSuggestionType source )
         {
             this.Id = source.Id;
-            this.GroupId = source.GroupId;
-            this.GroupTypeId = source.GroupTypeId;
+            this.Description = source.Description;
+            this.EntityTypeId = source.EntityTypeId;
             this.IsActive = source.IsActive;
             this.Name = source.Name;
-            this.Order = source.Order;
-            this.TriggerType = source.TriggerType;
-            this.TypeQualifier = source.TypeQualifier;
-            this.WorkflowName = source.WorkflowName;
-            this.WorkflowTypeId = source.WorkflowTypeId;
+            this.ReasonNote = source.ReasonNote;
             this.Guid = source.Guid;
             this.ForeignId = source.ForeignId;
 
@@ -90,12 +74,33 @@ namespace Rock.Client
     }
 
     /// <summary>
-    /// Client model for GroupMemberWorkflowTrigger that includes all the fields that are available for GETs. Use this for GETs (use GroupMemberWorkflowTriggerEntity for POST/PUTs)
+    /// Client model for FollowingSuggestionType that includes all the fields that are available for GETs. Use this for GETs (use FollowingSuggestionTypeEntity for POST/PUTs)
     /// </summary>
-    public partial class GroupMemberWorkflowTrigger : GroupMemberWorkflowTriggerEntity
+    public partial class FollowingSuggestionType : FollowingSuggestionTypeEntity
     {
         /// <summary />
-        public WorkflowType WorkflowType { get; set; }
+        public EntityType EntityType { get; set; }
 
+        /// <summary />
+        public DateTime? CreatedDateTime { get; set; }
+
+        /// <summary />
+        public DateTime? ModifiedDateTime { get; set; }
+
+        /// <summary />
+        public int? CreatedByPersonAliasId { get; set; }
+
+        /// <summary />
+        public int? ModifiedByPersonAliasId { get; set; }
+
+        /// <summary>
+        /// NOTE: Attributes are only populated when ?loadAttributes is specified. Options for loadAttributes are true, false, 'simple', 'expanded' 
+        /// </summary>
+        public Dictionary<string, Rock.Client.Attribute> Attributes { get; set; }
+
+        /// <summary>
+        /// NOTE: AttributeValues are only populated when ?loadAttributes is specified. Options for loadAttributes are true, false, 'simple', 'expanded' 
+        /// </summary>
+        public Dictionary<string, Rock.Client.AttributeValue> AttributeValues { get; set; }
     }
 }

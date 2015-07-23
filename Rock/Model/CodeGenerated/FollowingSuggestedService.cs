@@ -28,15 +28,15 @@ using Rock.Data;
 namespace Rock.Model
 {
     /// <summary>
-    /// FollowingSuggestion Service class
+    /// FollowingSuggested Service class
     /// </summary>
-    public partial class FollowingSuggestionService : Service<FollowingSuggestion>
+    public partial class FollowingSuggestedService : Service<FollowingSuggested>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FollowingSuggestionService"/> class
+        /// Initializes a new instance of the <see cref="FollowingSuggestedService"/> class
         /// </summary>
         /// <param name="context">The context.</param>
-        public FollowingSuggestionService(RockContext context) : base(context)
+        public FollowingSuggestedService(RockContext context) : base(context)
         {
         }
 
@@ -48,7 +48,7 @@ namespace Rock.Model
         /// <returns>
         ///   <c>true</c> if this instance can delete the specified item; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanDelete( FollowingSuggestion item, out string errorMessage )
+        public bool CanDelete( FollowingSuggested item, out string errorMessage )
         {
             errorMessage = string.Empty;
             return true;
@@ -58,40 +58,43 @@ namespace Rock.Model
     /// <summary>
     /// Generated Extension Methods
     /// </summary>
-    public static partial class FollowingSuggestionExtensionMethods
+    public static partial class FollowingSuggestedExtensionMethods
     {
         /// <summary>
-        /// Clones this FollowingSuggestion object to a new FollowingSuggestion object
+        /// Clones this FollowingSuggested object to a new FollowingSuggested object
         /// </summary>
         /// <param name="source">The source.</param>
         /// <param name="deepCopy">if set to <c>true</c> a deep copy is made. If false, only the basic entity properties are copied.</param>
         /// <returns></returns>
-        public static FollowingSuggestion Clone( this FollowingSuggestion source, bool deepCopy )
+        public static FollowingSuggested Clone( this FollowingSuggested source, bool deepCopy )
         {
             if (deepCopy)
             {
-                return source.Clone() as FollowingSuggestion;
+                return source.Clone() as FollowingSuggested;
             }
             else
             {
-                var target = new FollowingSuggestion();
+                var target = new FollowingSuggested();
                 target.CopyPropertiesFrom( source );
                 return target;
             }
         }
 
         /// <summary>
-        /// Copies the properties from another FollowingSuggestion object to this FollowingSuggestion object
+        /// Copies the properties from another FollowingSuggested object to this FollowingSuggested object
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="source">The source.</param>
-        public static void CopyPropertiesFrom( this FollowingSuggestion target, FollowingSuggestion source )
+        public static void CopyPropertiesFrom( this FollowingSuggested target, FollowingSuggested source )
         {
             target.Id = source.Id;
-            target.Description = source.Description;
+            target.EntityId = source.EntityId;
             target.EntityTypeId = source.EntityTypeId;
-            target.IsActive = source.IsActive;
-            target.Name = source.Name;
+            target.LastPromotedDateTime = source.LastPromotedDateTime;
+            target.Note = source.Note;
+            target.PersonAliasId = source.PersonAliasId;
+            target.Status = source.Status;
+            target.StatusChangedDateTime = source.StatusChangedDateTime;
             target.CreatedDateTime = source.CreatedDateTime;
             target.ModifiedDateTime = source.ModifiedDateTime;
             target.CreatedByPersonAliasId = source.CreatedByPersonAliasId;

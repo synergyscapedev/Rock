@@ -28,15 +28,15 @@ using Rock.Data;
 namespace Rock.Model
 {
     /// <summary>
-    /// FollowingEvent Service class
+    /// FollowingEventType Service class
     /// </summary>
-    public partial class FollowingEventService : Service<FollowingEvent>
+    public partial class FollowingEventTypeService : Service<FollowingEventType>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FollowingEventService"/> class
+        /// Initializes a new instance of the <see cref="FollowingEventTypeService"/> class
         /// </summary>
         /// <param name="context">The context.</param>
-        public FollowingEventService(RockContext context) : base(context)
+        public FollowingEventTypeService(RockContext context) : base(context)
         {
         }
 
@@ -48,7 +48,7 @@ namespace Rock.Model
         /// <returns>
         ///   <c>true</c> if this instance can delete the specified item; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanDelete( FollowingEvent item, out string errorMessage )
+        public bool CanDelete( FollowingEventType item, out string errorMessage )
         {
             errorMessage = string.Empty;
             return true;
@@ -58,39 +58,41 @@ namespace Rock.Model
     /// <summary>
     /// Generated Extension Methods
     /// </summary>
-    public static partial class FollowingEventExtensionMethods
+    public static partial class FollowingEventTypeExtensionMethods
     {
         /// <summary>
-        /// Clones this FollowingEvent object to a new FollowingEvent object
+        /// Clones this FollowingEventType object to a new FollowingEventType object
         /// </summary>
         /// <param name="source">The source.</param>
         /// <param name="deepCopy">if set to <c>true</c> a deep copy is made. If false, only the basic entity properties are copied.</param>
         /// <returns></returns>
-        public static FollowingEvent Clone( this FollowingEvent source, bool deepCopy )
+        public static FollowingEventType Clone( this FollowingEventType source, bool deepCopy )
         {
             if (deepCopy)
             {
-                return source.Clone() as FollowingEvent;
+                return source.Clone() as FollowingEventType;
             }
             else
             {
-                var target = new FollowingEvent();
+                var target = new FollowingEventType();
                 target.CopyPropertiesFrom( source );
                 return target;
             }
         }
 
         /// <summary>
-        /// Copies the properties from another FollowingEvent object to this FollowingEvent object
+        /// Copies the properties from another FollowingEventType object to this FollowingEventType object
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="source">The source.</param>
-        public static void CopyPropertiesFrom( this FollowingEvent target, FollowingEvent source )
+        public static void CopyPropertiesFrom( this FollowingEventType target, FollowingEventType source )
         {
             target.Id = source.Id;
             target.Description = source.Description;
             target.EntityTypeId = source.EntityTypeId;
             target.IsActive = source.IsActive;
+            target.IsNoticeRequired = source.IsNoticeRequired;
+            target.LastCheckDateTime = source.LastCheckDateTime;
             target.Name = source.Name;
             target.SendOnWeekends = source.SendOnWeekends;
             target.CreatedDateTime = source.CreatedDateTime;

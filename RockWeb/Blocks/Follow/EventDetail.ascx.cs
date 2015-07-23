@@ -54,7 +54,7 @@ namespace RockWeb.Blocks.Follow
         {
             base.LoadViewState( savedState );
 
-            var followingEvent = new FollowingEvent { Id = EventId, EntityTypeId = EventEntityTypeId };
+            var followingEvent = new FollowingEventType { Id = EventId, EntityTypeId = EventEntityTypeId };
             BuildDynamicControls( followingEvent, false );
         }
 
@@ -85,9 +85,9 @@ namespace RockWeb.Blocks.Follow
         {
             using ( var rockContext = new RockContext() )
             {
-                FollowingEvent followingEvent = null;
+                FollowingEventType followingEvent = null;
 
-                var eventService = new Rock.Model.FollowingEventService( rockContext );
+                var eventService = new Rock.Model.FollowingEventTypeService( rockContext );
 
                 if ( EventId != 0 )
                 {
@@ -96,7 +96,7 @@ namespace RockWeb.Blocks.Follow
 
                 if ( followingEvent == null )
                 {
-                    followingEvent = new Rock.Model.FollowingEvent();
+                    followingEvent = new Rock.Model.FollowingEventType();
                     eventService.Add( followingEvent );
                 }
 
@@ -134,7 +134,7 @@ namespace RockWeb.Blocks.Follow
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void cpEventType_SelectedIndexChanged( object sender, EventArgs e )
         {
-            var followingEvent = new FollowingEvent { Id = EventId, EntityTypeId = cpEventType.SelectedEntityTypeId };
+            var followingEvent = new FollowingEventType { Id = EventId, EntityTypeId = cpEventType.SelectedEntityTypeId };
             BuildDynamicControls( followingEvent, true );
         }
 
@@ -148,19 +148,19 @@ namespace RockWeb.Blocks.Follow
         /// <param name="eventId">The event identifier.</param>
         public void ShowDetail( int eventId )
         {
-            FollowingEvent followingEvent = null;
+            FollowingEventType followingEvent = null;
 
             bool editAllowed = IsUserAuthorized( Authorization.EDIT );
 
             if ( !eventId.Equals( 0 ) )
             {
-                followingEvent = new FollowingEventService( new RockContext() ).Get( eventId );
+                followingEvent = new FollowingEventTypeService( new RockContext() ).Get( eventId );
                 editAllowed = editAllowed || followingEvent.IsAuthorized( Authorization.EDIT, CurrentPerson );
             }
 
             if ( followingEvent == null )
             {
-                followingEvent = new FollowingEvent { Id = 0, IsActive = true };
+                followingEvent = new FollowingEventType { Id = 0, IsActive = true };
             }
 
             EventId = followingEvent.Id;
@@ -171,7 +171,7 @@ namespace RockWeb.Blocks.Follow
             if ( !editAllowed || !IsUserAuthorized( Authorization.EDIT ) )
             {
                 readOnly = true;
-                nbEditModeMessage.Text = EditModeMessage.ReadOnlyEditActionNotAllowed( FollowingEvent.FriendlyTypeName );
+                nbEditModeMessage.Text = EditModeMessage.ReadOnlyEditActionNotAllowed( FollowingEventType.FriendlyTypeName );
             }
 
             if ( readOnly )
@@ -188,11 +188,11 @@ namespace RockWeb.Blocks.Follow
         /// Shows the edit details.
         /// </summary>
         /// <param name="event">The event.</param>
-        private void ShowEditDetails( FollowingEvent followingEvent )
+        private void ShowEditDetails( FollowingEventType followingEvent )
         {
             if ( followingEvent.Id == 0 )
             {
-                lActionTitle.Text = ActionTitle.Add( FollowingEvent.FriendlyTypeName ).FormatAsHtmlTitle();
+                lActionTitle.Text = ActionTitle.Add( FollowingEventType.FriendlyTypeName ).FormatAsHtmlTitle();
             }
             else
             {
@@ -217,7 +217,7 @@ namespace RockWeb.Blocks.Follow
         /// Shows the readonly details.
         /// </summary>
         /// <param name="event">The event.</param>
-        private void ShowReadonlyDetails( FollowingEvent followingEvent )
+        private void ShowReadonlyDetails( FollowingEventType followingEvent )
         {
             SetEditMode( false );
 
@@ -250,7 +250,7 @@ namespace RockWeb.Blocks.Follow
             this.HideSecondaryBlocks( editable );
         }
 
-        private void BuildDynamicControls( FollowingEvent followingEvent, bool SetValues )
+        private void BuildDynamicControls( FollowingEventType followingEvent, bool SetValues )
         {
             EventEntityTypeId = followingEvent.EntityTypeId;
             if ( followingEvent.EntityTypeId.HasValue )
