@@ -139,5 +139,14 @@ namespace Rock.Follow
 
             return string.Empty;
         }
+
+        /// <summary>
+        /// Gets the followed entity type identifier.
+        /// </summary>
+        /// <value>
+        /// The followed entity type identifier.
+        /// </value>
+        public abstract Type FollowedType { get; }
+
     }
 }
