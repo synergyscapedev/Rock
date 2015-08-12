@@ -16,7 +16,7 @@
 //
 using System;
 using System.Collections.Generic;
-
+using Rock.Data;
 using Rock.Extension;
 using Rock.Model;
 
@@ -148,5 +148,17 @@ namespace Rock.Follow
         /// </value>
         public abstract Type FollowedType { get; }
 
+        public abstract List<PersonEntitySuggestion> GetSuggestions( List<int> FollowerPersonIds, RockContext rockContext );
+    }
+
+    public class PersonEntitySuggestion
+    {
+        public int PersonId { get; set; }
+        public int EntityId { get; set; }
+        public PersonEntitySuggestion( int personId, int entityId )
+        {
+            PersonId = personId;
+            EntityId = entityId;
+        }
     }
 }

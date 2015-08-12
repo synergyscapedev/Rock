@@ -15,8 +15,10 @@
 // </copyright>
 //
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 using Rock;
 using Rock.Data;
@@ -33,9 +35,8 @@ namespace Rock.Follow.Suggestion
     [Export( typeof( SuggestionComponent ) )]
     [ExportMetadata( "ComponentName", "InGroupTogether" )]
 
-    [GroupTypeField("Group Type", "The group type to use when evaluating people to suggest", true, "", "", 0 )]
-    [GroupRoleField( "", "Follower Role", "If specified, only people with this role in the group will be be notified with the suggested people in the group to follow.", false, "", "", 1)]
-    [GroupRoleField( "", "Followed Role", "If specified, only people with this role will be suggested to the follower.", false, "", "", 2)]
+    [GroupRoleField( "", "Follower Group Type", "If specified, only people with this role in the group will be be notified with the suggested people in the group to follow.", false, "", "", 1)]
+    [GroupRoleField( "", "Followed Group Type", "If specified, only people with this role will be suggested to the follower.", false, "", "", 2)]
     public class InGroupTogether : SuggestionComponent
     {
         #region Suggestion Component Implementation
@@ -49,6 +50,51 @@ namespace Rock.Follow.Suggestion
         public override Type FollowedType 
         {
             get { return typeof( Rock.Model.Person ); }
+        }
+
+        /// <summary>
+        /// Gets the suggestions.
+        /// </summary>
+        /// <param name="followerPersonIds">The follower person ids.</param>
+        /// <param name="rockContext">The rock context.</param>
+        /// <returns></returns>
+        public override List<PersonEntitySuggestion> GetSuggestions( List<int> followerPersonIds, RockContext rockContext )
+        {
+            var suggestions = new List<PersonEntitySuggestion>();
+
+            Guid? followerRoleGuid = GetAttributeValue( "FollowerGroupType" ).AsGuidOrNull();
+            Guid? followedRoleGuid = GetAttributeValue( "FollowedGroupType" ).AsGuidOrNull();
+
+            if ( followerRoleGuid.HasValue && followedRoleGuid.HasValue )
+            {
+                var groupMemberService = new GroupMemberService( rockContext );
+
+                var followers = groupMemberService.Queryable()
+                    .Where( m => 
+                        followerPersonIds.Contains( m.PersonId ) &&
+                        m.GroupRole.Guid.Equals( followerRoleGuid.Value ) );
+                var followed = groupMemberService.Queryable()
+                    .Where( m => m.GroupRole.Guid.Equals( followedRoleGuid.Value ) );
+                
+                foreach ( var suggestion in followers
+                    .Join( followed, s => s.GroupId, t => t.GroupId, ( s, t ) => new { s, t } )
+                    .Where( j => j.s.PersonId != j.t.PersonId )
+                   
+                    .Select( j => new {
+                        FollowerPersonId = j.s.PersonId,
+                        FollowedPerson = j.t.Person
+                    }))
+                {
+                    int? entityId = suggestion.FollowedPerson.PrimaryAliasId;
+                    if ( entityId.HasValue )
+                    {
+                        suggestions.Add( new PersonEntitySuggestion( suggestion.FollowerPersonId, entityId.Value ) );
+                    }
+                }
+
+            }
+
+            return suggestions;
         }
 
         #endregion

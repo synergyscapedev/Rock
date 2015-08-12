@@ -167,14 +167,19 @@ namespace Rock.Model
     public enum FollowingSuggestedStatus
     {
         /// <summary>
+        /// The pending notification
+        /// </summary>
+        PendingNotification = 0,
+
+        /// <summary>
         /// Emails can be sent to person
         /// </summary>
-        Suggested = 0,
+        Suggested = 1,
 
         /// <summary>
         /// No Mass emails should be sent to person
         /// </summary>
-        Ignored = 1,
+        Ignored = 2,
     }
 
     #endregion
