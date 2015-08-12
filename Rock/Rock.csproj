@@ -322,7 +322,6 @@
     <Compile Include="Model\CodeGenerated\FollowingEventSubscriptionService.cs" />
     <Compile Include="Model\CodeGenerated\FollowingEventTypeService.cs" />
     <Compile Include="Model\CodeGenerated\FollowingSuggestedService.cs" />
-    <Compile Include="Model\CodeGenerated\FollowingSuggestionSubscriptionService.cs" />
     <Compile Include="Model\CodeGenerated\FollowingSuggestionTypeService.cs" />
     <Compile Include="Model\CommunicationService.Partial.cs" />
     <Compile Include="Model\ConnectionOpportunityCampus.cs" />
@@ -390,7 +389,6 @@
     <Compile Include="Model\EventCalendarItem.cs" />
     <Compile Include="Model\EventItem.cs" />
     <Compile Include="Model\FollowingSuggested.cs" />
-    <Compile Include="Model\FollowingSuggestionSubscription.cs" />
     <Compile Include="Model\FollowingEventSubscription.cs" />
     <Compile Include="Model\FollowingEventType.cs" />
     <Compile Include="Model\FollowingSuggestionType.cs" />

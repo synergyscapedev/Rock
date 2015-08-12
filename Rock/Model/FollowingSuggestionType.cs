@@ -65,7 +65,17 @@ namespace Rock.Model
         /// </value>
         [Required]
         [MaxLength( 50 )]
+        [DataMember]
         public string ReasonNote { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reminder days.
+        /// </summary>
+        /// <value>
+        /// The reminder days.
+        /// </value>
+        [DataMember]
+        public int? ReminderDays { get; set; }
 
         /// <summary>
         /// Gets or sets the suggestion entity type identifier.

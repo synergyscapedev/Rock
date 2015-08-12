@@ -37,6 +37,7 @@ namespace Rock.Migrations
                         EntityTypeId = c.Int(nullable: false),
                         EntityId = c.Int(nullable: false),
                         PersonAliasId = c.Int(nullable: false),
+                        SuggestionTypeId = c.Int(nullable: false),
                         LastPromotedDateTime = c.DateTime(),
                         StatusChangedDateTime = c.DateTime(nullable: false),
                         Note = c.String(),
@@ -53,34 +54,10 @@ namespace Rock.Migrations
                 .ForeignKey("dbo.EntityType", t => t.EntityTypeId, cascadeDelete: true)
                 .ForeignKey("dbo.PersonAlias", t => t.ModifiedByPersonAliasId)
                 .ForeignKey("dbo.PersonAlias", t => t.PersonAliasId, cascadeDelete: true)
+                .ForeignKey("dbo.FollowingSuggestionType", t => t.SuggestionTypeId, cascadeDelete: true)
                 .Index(t => t.EntityTypeId)
                 .Index(t => t.PersonAliasId)
-                .Index(t => t.CreatedByPersonAliasId)
-                .Index(t => t.ModifiedByPersonAliasId)
-                .Index(t => t.Guid, unique: true)
-                .Index(t => t.ForeignId);
-            
-            CreateTable(
-                "dbo.FollowingSuggestionSubscription",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        SuggestionTypeId = c.Int(nullable: false),
-                        PersonAliasId = c.Int(nullable: false),
-                        CreatedDateTime = c.DateTime(),
-                        ModifiedDateTime = c.DateTime(),
-                        CreatedByPersonAliasId = c.Int(),
-                        ModifiedByPersonAliasId = c.Int(),
-                        Guid = c.Guid(nullable: false),
-                        ForeignId = c.String(maxLength: 100),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.PersonAlias", t => t.CreatedByPersonAliasId)
-                .ForeignKey("dbo.PersonAlias", t => t.ModifiedByPersonAliasId)
-                .ForeignKey("dbo.PersonAlias", t => t.PersonAliasId, cascadeDelete: true)
-                .ForeignKey("dbo.FollowingSuggestionType", t => t.SuggestionTypeId, cascadeDelete: true)
                 .Index(t => t.SuggestionTypeId)
-                .Index(t => t.PersonAliasId)
                 .Index(t => t.CreatedByPersonAliasId)
                 .Index(t => t.ModifiedByPersonAliasId)
                 .Index(t => t.Guid, unique: true)
@@ -167,6 +144,11 @@ namespace Rock.Migrations
                 .Index(t => t.ModifiedByPersonAliasId)
                 .Index(t => t.Guid, unique: true)
                 .Index(t => t.ForeignId);
+            
+            AddColumn("dbo.GroupType", "IgnorePersonInactivated", c => c.Boolean(nullable: false));
+
+            // Rename person following block
+            RockMigrationHelper.RenameBlockType( "~/Blocks/Crm/PersonFollowingList.ascx", "~/Blocks/Follow/PersonFollowingList.ascx", "Follow" );
 
             // Following component types
             RockMigrationHelper.UpdateEntityType( "Rock.Model.FollowingEventType", "8A0D208B-762D-403A-A972-3A0F079866D4", true, true );
@@ -181,7 +163,7 @@ namespace Rock.Migrations
     DECLARE @AttributeId int = ( SELECT TOP 1 [Id] FROM [Attribute] WHERE [Guid] = 'F5B35909-5A4A-4203-84A8-7F493E56548B' )
     IF @EntityTypeId IS NOT NULL
     BEGIN
-	    INSERT INTO [FollowingEvent] ( [Name], [Description], [EntityTypeId], [IsActive], [SendOnWeekends], [IsNoticeRequired], [Guid] )
+	    INSERT INTO [FollowingEventType] ( [Name], [Description], [EntityTypeId], [IsActive], [SendOnWeekends], [IsNoticeRequired], [Guid] )
 	    VALUES 
 	      ( 'Person Birthday (5 day notice)', 'Five day notice of an upcoming birthday.', @EntityTypeId, 1, 0, 0, 'E1C2F8BD-E875-4C7B-91A1-EDB98AB01BDC' ),
 	      ( 'Person Birthday (day of notice)', 'Notice of a birthday today.', @EntityTypeId, 1, 0, 0, 'F3A577DB-8F4A-4245-BD00-0B2B8F789131' )
@@ -189,11 +171,11 @@ namespace Rock.Migrations
 	    BEGIN
 		    INSERT INTO [AttributeValue] ( [IsSystem], [AttributeId], [EntityId], [Value], [Guid] )
 		    SELECT 0, @AttributeId, [Id], '5', NEWID()
-		    FROM [FollowingEvent] WHERE [Guid] = 'E1C2F8BD-E875-4C7B-91A1-EDB98AB01BDC'
+		    FROM [FollowingEventType] WHERE [Guid] = 'E1C2F8BD-E875-4C7B-91A1-EDB98AB01BDC'
 
 		    INSERT INTO [AttributeValue] ( [IsSystem], [AttributeId], [EntityId], [Value], [Guid] )
 		    SELECT 0, @AttributeId, [Id], '0', NEWID()
-		    FROM [FollowingEvent] WHERE [Guid] = 'F3A577DB-8F4A-4245-BD00-0B2B8F789131'
+		    FROM [FollowingEventType] WHERE [Guid] = 'F3A577DB-8F4A-4245-BD00-0B2B8F789131'
 	    END
     END
 " );
@@ -226,13 +208,10 @@ namespace Rock.Migrations
             DropForeignKey("dbo.FollowingEventType", "EntityTypeId", "dbo.EntityType");
             DropForeignKey("dbo.FollowingEventType", "CreatedByPersonAliasId", "dbo.PersonAlias");
             DropForeignKey("dbo.FollowingEventSubscription", "CreatedByPersonAliasId", "dbo.PersonAlias");
-            DropForeignKey("dbo.FollowingSuggestionSubscription", "SuggestionTypeId", "dbo.FollowingSuggestionType");
+            DropForeignKey("dbo.FollowingSuggested", "SuggestionTypeId", "dbo.FollowingSuggestionType");
             DropForeignKey("dbo.FollowingSuggestionType", "ModifiedByPersonAliasId", "dbo.PersonAlias");
             DropForeignKey("dbo.FollowingSuggestionType", "EntityTypeId", "dbo.EntityType");
             DropForeignKey("dbo.FollowingSuggestionType", "CreatedByPersonAliasId", "dbo.PersonAlias");
-            DropForeignKey("dbo.FollowingSuggestionSubscription", "PersonAliasId", "dbo.PersonAlias");
-            DropForeignKey("dbo.FollowingSuggestionSubscription", "ModifiedByPersonAliasId", "dbo.PersonAlias");
-            DropForeignKey("dbo.FollowingSuggestionSubscription", "CreatedByPersonAliasId", "dbo.PersonAlias");
             DropForeignKey("dbo.FollowingSuggested", "PersonAliasId", "dbo.PersonAlias");
             DropForeignKey("dbo.FollowingSuggested", "ModifiedByPersonAliasId", "dbo.PersonAlias");
             DropForeignKey("dbo.FollowingSuggested", "EntityTypeId", "dbo.EntityType");
@@ -253,22 +232,17 @@ namespace Rock.Migrations
             DropIndex("dbo.FollowingSuggestionType", new[] { "ModifiedByPersonAliasId" });
             DropIndex("dbo.FollowingSuggestionType", new[] { "CreatedByPersonAliasId" });
             DropIndex("dbo.FollowingSuggestionType", new[] { "EntityTypeId" });
-            DropIndex("dbo.FollowingSuggestionSubscription", new[] { "ForeignId" });
-            DropIndex("dbo.FollowingSuggestionSubscription", new[] { "Guid" });
-            DropIndex("dbo.FollowingSuggestionSubscription", new[] { "ModifiedByPersonAliasId" });
-            DropIndex("dbo.FollowingSuggestionSubscription", new[] { "CreatedByPersonAliasId" });
-            DropIndex("dbo.FollowingSuggestionSubscription", new[] { "PersonAliasId" });
-            DropIndex("dbo.FollowingSuggestionSubscription", new[] { "SuggestionTypeId" });
             DropIndex("dbo.FollowingSuggested", new[] { "ForeignId" });
             DropIndex("dbo.FollowingSuggested", new[] { "Guid" });
             DropIndex("dbo.FollowingSuggested", new[] { "ModifiedByPersonAliasId" });
             DropIndex("dbo.FollowingSuggested", new[] { "CreatedByPersonAliasId" });
+            DropIndex("dbo.FollowingSuggested", new[] { "SuggestionTypeId" });
             DropIndex("dbo.FollowingSuggested", new[] { "PersonAliasId" });
             DropIndex("dbo.FollowingSuggested", new[] { "EntityTypeId" });
+            DropColumn("dbo.GroupType", "IgnorePersonInactivated");
             DropTable("dbo.FollowingEventType");
             DropTable("dbo.FollowingEventSubscription");
             DropTable("dbo.FollowingSuggestionType");
-            DropTable("dbo.FollowingSuggestionSubscription");
             DropTable("dbo.FollowingSuggested");
         }
     }

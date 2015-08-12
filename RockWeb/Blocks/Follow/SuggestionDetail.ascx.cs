@@ -105,6 +105,7 @@ namespace RockWeb.Blocks.Follow
                 followingSuggestion.Description = tbDescription.Text;
                 followingSuggestion.EntityTypeId = cpSuggestionType.SelectedEntityTypeId;
                 followingSuggestion.ReasonNote = tbReasonNote.Text;
+                followingSuggestion.ReminderDays = nbReminderDays.Text.AsIntegerOrNull();
 
                 rockContext.SaveChanges();
 
@@ -207,6 +208,7 @@ namespace RockWeb.Blocks.Follow
             tbDescription.Text = followingSuggestion.Description;
             cpSuggestionType.SetValue( followingSuggestion.EntityType != null ? followingSuggestion.EntityType.Guid.ToString().ToUpper() : string.Empty );
             tbReasonNote.Text = followingSuggestion.ReasonNote;
+            nbReminderDays.Text = followingSuggestion.ReminderDays.HasValue ? followingSuggestion.ReminderDays.Value.ToString() : "";
 
             BuildDynamicControls( followingSuggestion, true );
         }
@@ -253,7 +255,7 @@ namespace RockWeb.Blocks.Follow
             if ( followingSuggestion.EntityTypeId.HasValue )
             {
                 var SuggestionComponentEntityType = EntityTypeCache.Read( followingSuggestion.EntityTypeId.Value );
-                var SuggestionEntityType = EntityTypeCache.Read( "Rock.Model.FollowingSuggestion " );
+                var SuggestionEntityType = EntityTypeCache.Read( "Rock.Model.FollowingSuggestionType" );
                 if ( SuggestionComponentEntityType != null && SuggestionEntityType != null )
                 {
                     using ( var rockContext = new RockContext() )

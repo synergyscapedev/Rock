@@ -144,7 +144,6 @@
     <Compile Include="Controllers\CodeGenerated\FollowingEventTypesController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingsController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingSuggestedsController.cs" />
-    <Compile Include="Controllers\CodeGenerated\FollowingSuggestionSubscriptionsController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingSuggestionTypesController.cs" />
     <Compile Include="Controllers\CodeGenerated\GroupMemberRequirementsController.cs" />
     <Compile Include="Controllers\CodeGenerated\GroupMemberWorkflowTriggersController.cs" />

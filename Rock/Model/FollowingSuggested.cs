@@ -62,6 +62,15 @@ namespace Rock.Model
         public int PersonAliasId { get; set; }
 
         /// <summary>
+        /// Gets or sets the suggestion type identifier.
+        /// </summary>
+        /// <value>
+        /// The suggestion type identifier.
+        /// </value>
+        [DataMember]
+        public int SuggestionTypeId { get; set; }
+
+        /// <summary>
         /// Gets or sets the last promoted date time.
         /// </summary>
         /// <value>
@@ -119,6 +128,9 @@ namespace Rock.Model
         [DataMember]
         public virtual PersonAlias PersonAlias { get; set; }
 
+        [DataMember]
+        public virtual FollowingSuggestionType SuggestionType { get; set; }
+        
         #endregion
 
         #region Public Methods
@@ -141,6 +153,7 @@ namespace Rock.Model
         {
             this.HasRequired( f => f.EntityType ).WithMany().HasForeignKey( f => f.EntityTypeId ).WillCascadeOnDelete( true );
             this.HasRequired( f => f.PersonAlias ).WithMany().HasForeignKey( f => f.PersonAliasId ).WillCascadeOnDelete( true );
+            this.HasRequired( f => f.SuggestionType ).WithMany().HasForeignKey( f => f.SuggestionTypeId ).WillCascadeOnDelete( true );
         }
     }
 

@@ -38,7 +38,7 @@ namespace Rock.Follow.Suggestion
     [GroupRoleField( "", "Followed Role", "If specified, only people with this role will be suggested to the follower.", false, "", "", 2)]
     public class InGroupTogether : SuggestionComponent
     {
-        #region Event Component Implementation
+        #region Suggestion Component Implementation
 
         /// <summary>
         /// Gets the followed entity type identifier.

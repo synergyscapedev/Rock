@@ -56,7 +56,9 @@
                             <Rock:ComponentPicker ID="cpSuggestionType" runat="server" Label="Suggestion Type" Required="true" ContainerType="Rock.Follow.SuggestionContainer"
                                 AutoPostBack="true" OnSelectedIndexChanged="cpSuggestionType_SelectedIndexChanged" />
                             <Rock:RockTextBox ID="tbReasonNote" runat="server" Label="Reason Note" 
-                                Help="Short note to describe to the recipient why a person was suggested." />
+                                Help="Short note to describe to the recipient why an following was suggested." />
+                            <Rock:NumberBox ID="nbReminderDays" runat="server" Label="Reminded Days" 
+                                Help="The number of days to wait before notifying person of this suggestion again if they have not followed or ignored the suggestion. Leave blank if person should never be reminded." />
                         </div>
                         <div class="col-md-6">
                             <asp:PlaceHolder ID="phAttributes" runat="server" EnableViewState="false" />
