@@ -142,6 +142,7 @@
     <Compile Include="Controllers\CodeGenerated\FinancialGatewaysController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingEventSubscriptionsController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingEventTypesController.cs" />
+    <Compile Include="Controllers\CodeGenerated\FinancialPaymentDetailsController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingsController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingSuggestedsController.cs" />
     <Compile Include="Controllers\CodeGenerated\FollowingSuggestionTypesController.cs" />

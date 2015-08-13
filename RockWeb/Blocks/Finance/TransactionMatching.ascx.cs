@@ -330,14 +330,14 @@ namespace RockWeb.Blocks.Finance
                     ddlIndividual.Attributes.Remove( "disabled" );
                     badgeIndividualCount.InnerText = "";
 
-                    // if this transaction has a CheckMicrEncrypted, try to find matching person(s)
+                    // if this transaction has a CheckMicrParts, try to find matching person(s)
                     string checkMicrHashed = null;
 
-                    if ( !string.IsNullOrWhiteSpace( transactionToMatch.CheckMicrEncrypted ) )
+                    if ( !string.IsNullOrWhiteSpace( transactionToMatch.CheckMicrParts ) )
                     {
                         try
                         {
-                            var checkMicrClearText = Encryption.DecryptString( transactionToMatch.CheckMicrEncrypted );
+                            var checkMicrClearText = Encryption.DecryptString( transactionToMatch.CheckMicrParts );
                             var parts = checkMicrClearText.Split( '_' );
                             if ( parts.Length >= 2 )
                             {
@@ -346,7 +346,7 @@ namespace RockWeb.Blocks.Finance
                         }
                         catch
                         {
-                            // intentionally ignore exception when decripting CheckMicrEncrypted since we'll be checking for null below
+                            // intentionally ignore exception when decripting CheckMicrParts since we'll be checking for null below
                         }
                     }
 
@@ -366,7 +366,8 @@ namespace RockWeb.Blocks.Finance
                         transactionToMatch.FinancialPaymentDetail.CurrencyTypeValue != null &&
                         transactionToMatch.FinancialPaymentDetail.CurrencyTypeValue.Guid == Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CHECK.AsGuid();
 
-                    nbNoMicrWarning.Visible = requiresMicr && string.IsNullOrWhiteSpace( checkMicrHashed );
+                    // if this is a check, and the MICR could not be accurately read, show the warning
+                    nbBadMicrWarning.Visible = requiresMicr && transactionToMatch.MICRStatus == MICRStatus.Fail;
 
                     if ( ddlIndividual.Items.Count == 2 )
                     {
@@ -627,12 +628,6 @@ namespace RockWeb.Blocks.Finance
                     financialTransaction.FinancialPaymentDetail != null &&
                     financialTransaction.FinancialPaymentDetail.CurrencyTypeValue != null &&
                     financialTransaction.FinancialPaymentDetail.CurrencyTypeValue.Guid == Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CHECK.AsGuid();
-                if ( requiresMicr && string.IsNullOrWhiteSpace( accountNumberSecured ) )
-                {
-                    // should be showing already, but just in case
-                    nbNoMicrWarning.Visible = true;
-                    return;
-                }
 
                 if ( cbTotalAmount.Text.AsDecimalOrNull() == null )
                 {
@@ -644,8 +639,8 @@ namespace RockWeb.Blocks.Finance
                 var personAlias = new PersonAliasService( rockContext ).GetPrimaryAlias( authorizedPersonId.Value );
                 int? personAliasId = personAlias != null ? personAlias.Id : (int?)null;
 
-                // if this transaction has an accountnumber associated with it (in other words, it's a scanned check), ensure there is a financialPersonBankAccount record
-                if ( !string.IsNullOrWhiteSpace( accountNumberSecured ) )
+                // if this transaction has an accountnumber associated with it (in other words, it's a valid scanned check), ensure there is a financialPersonBankAccount record
+                if ( financialTransaction.MICRStatus == MICRStatus.Success && !string.IsNullOrWhiteSpace( accountNumberSecured ) )
                 {
                     var financialPersonBankAccount = financialPersonBankAccountService.Queryable().Where( a => a.AccountNumberSecured == accountNumberSecured && a.PersonAlias.PersonId == authorizedPersonId.Value ).FirstOrDefault();
                     if ( financialPersonBankAccount == null )
@@ -656,7 +651,7 @@ namespace RockWeb.Blocks.Finance
                             financialPersonBankAccount.PersonAliasId = personAliasId.Value;
                             financialPersonBankAccount.AccountNumberSecured = accountNumberSecured;
 
-                            var checkMicrClearText = Encryption.DecryptString( financialTransaction.CheckMicrEncrypted );
+                            var checkMicrClearText = Encryption.DecryptString( financialTransaction.CheckMicrParts );
                             var parts = checkMicrClearText.Split( '_' );
                             if ( parts.Length >= 2 )
                             {

@@ -324,6 +324,7 @@
     <Compile Include="Model\CodeGenerated\FollowingEventTypeService.cs" />
     <Compile Include="Model\CodeGenerated\FollowingSuggestedService.cs" />
     <Compile Include="Model\CodeGenerated\FollowingSuggestionTypeService.cs" />
+    <Compile Include="Model\CodeGenerated\FinancialPaymentDetailService.cs" />
     <Compile Include="Model\CommunicationService.Partial.cs" />
     <Compile Include="Model\ConnectionOpportunityCampus.cs" />
     <Compile Include="Model\ConnectionRequest.cs" />
@@ -429,7 +430,6 @@
     <Compile Include="Model\WorkflowActivityTypeService.Partial.cs" />
     <Compile Include="Model\WorkflowActionTypeService.Partial.cs" />
     <Compile Include="Model\GroupMemberWorkflowTrigger.cs" />
-    <Compile Include="Net\RockRestClient.cs" />
     <Compile Include="PersonProfile\Badge\GeofencedByGroup.cs" />
     <Compile Include="PersonProfile\Badge\DISC.cs" />
     <Compile Include="Reporting\ComparisonHelper.cs" />
@@ -650,7 +650,6 @@
     <Compile Include="Model\PageView.cs" />
     <Compile Include="Model\WorkflowActionFormAttribute.cs" />
     <Compile Include="Model\WorkflowActionForm.cs" />
-    <Compile Include="Net\RestParameters\ContributionStatementOptions.cs" />
     <Compile Include="PersonProfile\Badge\Campus.cs" />
     <Compile Include="PersonProfile\Badge\AttendingDuration.cs" />
     <Compile Include="PersonProfile\Badge\LastVisitOnSite.cs" />
@@ -716,9 +715,6 @@
     <Compile Include="Model\CodeGenerated\FinancialPersonSavedAccountService.cs" />
     <Compile Include="Model\CodeGenerated\FinancialTransactionRefundService.cs" />
     <Compile Include="Model\BinaryFileData.cs" />
-    <Compile Include="Net\RockWebRequest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="PersonProfile\BadgeComponent.cs" />
     <Compile Include="PersonProfile\BadgeContainer.cs" />
     <Compile Include="PersonProfile\Badge\FamilyAttendance.cs" />
