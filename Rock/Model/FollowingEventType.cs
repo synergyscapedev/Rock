@@ -59,13 +59,22 @@ namespace Rock.Model
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the event component identifier.
+        /// Gets or sets the event MEF component identifier.
         /// </summary>
         /// <value>
         /// The event entity type identifier.
         /// </value>
         [DataMember]
         public int? EntityTypeId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the followed entity type identifier.
+        /// </summary>
+        /// <value>
+        /// The followed entity type identifier.
+        /// </value>
+        [DataMember]
+        public int? FollowedEntityTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is active.
@@ -121,6 +130,15 @@ namespace Rock.Model
         [DataMember]
         public virtual EntityType EntityType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the type of the followed entity.
+        /// </summary>
+        /// <value>
+        /// The type of the followed entity.
+        /// </value>
+        [DataMember]
+        public virtual EntityType FollowedEntityType { get; set; }
+        
         #endregion
 
         #region Constructors
@@ -182,7 +200,8 @@ namespace Rock.Model
         /// </summary>
         public FollowingEventConfiguration()
         {
-            this.HasRequired( g => g.EntityType).WithMany().HasForeignKey( a => a.EntityTypeId).WillCascadeOnDelete( false );
+            this.HasOptional( g => g.EntityType).WithMany().HasForeignKey( a => a.EntityTypeId).WillCascadeOnDelete( false );
+            this.HasOptional( g => g.FollowedEntityType ).WithMany().HasForeignKey( a => a.FollowedEntityTypeId ).WillCascadeOnDelete( false );
         }
     }
 

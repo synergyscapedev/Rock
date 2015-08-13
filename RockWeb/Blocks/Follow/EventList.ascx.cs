@@ -33,7 +33,7 @@ using Rock.Web.UI.Controls;
 namespace RockWeb.Blocks.Follow
 {
     /// <summary>
-    /// Block for viewing list of financial events
+    /// Block for viewing list of following events
     /// </summary>
     [DisplayName( "Event List" )]
     [Category( "Follow" )]

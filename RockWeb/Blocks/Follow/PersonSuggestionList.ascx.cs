@@ -33,7 +33,7 @@ using Rock.Web.UI.Controls;
 namespace RockWeb.Blocks.Follow
 {
     /// <summary>
-    /// Block for displaying people that current person follows.  
+    /// Block for displaying people that have been suggested to current person to follow.
     /// </summary>
     [DisplayName( "Person Suggestion List" )]
     [Category( "Follow" )]

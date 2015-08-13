@@ -89,15 +89,6 @@ namespace Rock.Model
         public DateTime StatusChangedDateTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the note.
-        /// </summary>
-        /// <value>
-        /// The note.
-        /// </value>
-        [DataMember]
-        public string Note { get; set; }
-
-        /// <summary>
         /// Gets or sets the status.
         /// </summary>
         /// <value>
@@ -128,6 +119,12 @@ namespace Rock.Model
         [DataMember]
         public virtual PersonAlias PersonAlias { get; set; }
 
+        /// <summary>
+        /// Gets or sets the type of the suggestion.
+        /// </summary>
+        /// <value>
+        /// The type of the suggestion.
+        /// </value>
         [DataMember]
         public virtual FollowingSuggestionType SuggestionType { get; set; }
         

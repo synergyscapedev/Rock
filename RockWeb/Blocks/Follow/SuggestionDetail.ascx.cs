@@ -31,9 +31,12 @@ using Rock.Web.UI;
 
 namespace RockWeb.Blocks.Follow
 {
+    /// <summary>
+    /// Block for editing the following suggestion types.
+    /// </summary>
     [DisplayName( "Suggestion Detail" )]
     [Category( "Follow" )]
-    [Description( "Displays the details of the given financial event." )]
+    [Description( "Block for editing the following suggestion types." )]
     public partial class SuggestionDetail : RockBlock, IDetailBlock
     {
         #region Control Methods

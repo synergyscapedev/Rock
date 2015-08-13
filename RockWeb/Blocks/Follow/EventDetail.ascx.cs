@@ -31,9 +31,12 @@ using Rock.Web.UI;
 
 namespace RockWeb.Blocks.Follow
 {
+    /// <summary>
+    /// Block for editing following event types.
+    /// </summary>
     [DisplayName( "Event Detail" )]
     [Category( "Follow" )]
-    [Description( "Displays the details of the given financial event." )]
+    [Description( "Block for editing following event types." )]
     public partial class EventDetail : RockBlock, IDetailBlock
     {
         #region Control Methods

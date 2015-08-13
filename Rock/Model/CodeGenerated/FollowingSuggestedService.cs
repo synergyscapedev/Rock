@@ -91,7 +91,6 @@ namespace Rock.Model
             target.EntityId = source.EntityId;
             target.EntityTypeId = source.EntityTypeId;
             target.LastPromotedDateTime = source.LastPromotedDateTime;
-            target.Note = source.Note;
             target.PersonAliasId = source.PersonAliasId;
             target.Status = source.Status;
             target.StatusChangedDateTime = source.StatusChangedDateTime;
