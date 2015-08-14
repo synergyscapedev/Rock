@@ -40,7 +40,6 @@ namespace Rock.Migrations
                         SuggestionTypeId = c.Int(nullable: false),
                         LastPromotedDateTime = c.DateTime(),
                         StatusChangedDateTime = c.DateTime(nullable: false),
-                        Note = c.String(),
                         Status = c.Int(nullable: false),
                         CreatedDateTime = c.DateTime(),
                         ModifiedDateTime = c.DateTime(),
@@ -71,6 +70,7 @@ namespace Rock.Migrations
                         Name = c.String(nullable: false, maxLength: 50),
                         Description = c.String(),
                         ReasonNote = c.String(nullable: false, maxLength: 50),
+                        ReminderDays = c.Int(),
                         EntityTypeId = c.Int(nullable: false),
                         IsActive = c.Boolean(nullable: false),
                         CreatedDateTime = c.DateTime(),
@@ -123,7 +123,8 @@ namespace Rock.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(nullable: false, maxLength: 50),
                         Description = c.String(),
-                        EntityTypeId = c.Int(nullable: false),
+                        EntityTypeId = c.Int(),
+                        FollowedEntityTypeId = c.Int(),
                         IsActive = c.Boolean(nullable: false),
                         SendOnWeekends = c.Boolean(nullable: false),
                         LastCheckDateTime = c.DateTime(),
@@ -138,8 +139,10 @@ namespace Rock.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.PersonAlias", t => t.CreatedByPersonAliasId)
                 .ForeignKey("dbo.EntityType", t => t.EntityTypeId)
+                .ForeignKey("dbo.EntityType", t => t.FollowedEntityTypeId)
                 .ForeignKey("dbo.PersonAlias", t => t.ModifiedByPersonAliasId)
                 .Index(t => t.EntityTypeId)
+                .Index(t => t.FollowedEntityTypeId)
                 .Index(t => t.CreatedByPersonAliasId)
                 .Index(t => t.ModifiedByPersonAliasId)
                 .Index(t => t.Guid, unique: true)
@@ -205,6 +208,7 @@ namespace Rock.Migrations
             DropForeignKey("dbo.FollowingEventSubscription", "ModifiedByPersonAliasId", "dbo.PersonAlias");
             DropForeignKey("dbo.FollowingEventSubscription", "EventTypeId", "dbo.FollowingEventType");
             DropForeignKey("dbo.FollowingEventType", "ModifiedByPersonAliasId", "dbo.PersonAlias");
+            DropForeignKey("dbo.FollowingEventType", "FollowedEntityTypeId", "dbo.EntityType");
             DropForeignKey("dbo.FollowingEventType", "EntityTypeId", "dbo.EntityType");
             DropForeignKey("dbo.FollowingEventType", "CreatedByPersonAliasId", "dbo.PersonAlias");
             DropForeignKey("dbo.FollowingEventSubscription", "CreatedByPersonAliasId", "dbo.PersonAlias");
@@ -220,6 +224,7 @@ namespace Rock.Migrations
             DropIndex("dbo.FollowingEventType", new[] { "Guid" });
             DropIndex("dbo.FollowingEventType", new[] { "ModifiedByPersonAliasId" });
             DropIndex("dbo.FollowingEventType", new[] { "CreatedByPersonAliasId" });
+            DropIndex("dbo.FollowingEventType", new[] { "FollowedEntityTypeId" });
             DropIndex("dbo.FollowingEventType", new[] { "EntityTypeId" });
             DropIndex("dbo.FollowingEventSubscription", new[] { "ForeignId" });
             DropIndex("dbo.FollowingEventSubscription", new[] { "Guid" });

@@ -44,6 +44,7 @@ namespace RockWeb.Blocks.Follow
         #region Fields
 
         private RockContext _rockContext = null;
+        protected List<int> _currentSubscriptions = new List<int>();
 
         #endregion
 
@@ -100,17 +101,27 @@ namespace RockWeb.Blocks.Follow
         protected void rptEntityType_ItemDataBound( object sender, RepeaterItemEventArgs e )
         {
             var rptEvent = e.Item.FindControl( "rptEvent" ) as Repeater;
-            var entityType = e.Item.DataItem as EntityType;
-            if ( rptEvent != null && entityType != null )
+            var followedEntityType = e.Item.DataItem as EntityType;
+            if ( rptEvent != null && followedEntityType != null )
             {
                 var qry = new FollowingEventTypeService( _rockContext )
                     .Queryable().AsNoTracking()
                     .Where( f =>
-                        f.EntityTypeId == entityType.Id &&
+                        f.FollowedEntityTypeId.HasValue &&
+                        f.FollowedEntityTypeId.Value == followedEntityType.Id &&
                         f.IsActive )
                     .OrderBy( f => f.Name );
 
-                rptEvent.DataSource = qry.ToList();
+                rptEvent.DataSource = qry
+                    .Select( f => new
+                        {
+                            f.Id,
+                            f.IsNoticeRequired,
+                            Name = f.IsNoticeRequired ? f.Name + " (required)" : f.Name,
+                            f.Description,
+                            Selected = f.IsNoticeRequired || _currentSubscriptions.Contains( f.Id )
+                        } )
+                    .ToList();
                 rptEvent.DataBind();
             }
         }
@@ -178,10 +189,22 @@ namespace RockWeb.Blocks.Follow
         /// </summary>
         private void GetData()
         {
+            if ( CurrentPersonId.HasValue )
+            {
+                _currentSubscriptions = new FollowingEventSubscriptionService( _rockContext )
+                    .Queryable().AsNoTracking()
+                    .Where( s => s.PersonAlias.PersonId == CurrentPersonId )
+                    .Select( s => s.EventTypeId )
+                    .Distinct()
+                    .ToList();
+            }
+
             var qry = new FollowingEventTypeService( _rockContext )
                 .Queryable().AsNoTracking()
-                .Where( e => e.IsActive )
-                .Select( e => e.EntityType )
+                .Where( e => 
+                    e.IsActive && 
+                    e.FollowedEntityType != null )
+                .Select( e => e.FollowedEntityType )
                 .OrderBy( e => e.Name )
                 .Distinct();
 
@@ -190,5 +213,6 @@ namespace RockWeb.Blocks.Follow
         }
 
         #endregion
+
 }
 }

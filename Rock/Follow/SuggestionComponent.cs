@@ -148,7 +148,13 @@ namespace Rock.Follow
         /// </value>
         public abstract Type FollowedType { get; }
 
-        public abstract List<PersonEntitySuggestion> GetSuggestions( List<int> FollowerPersonIds, RockContext rockContext );
+        /// <summary>
+        /// Gets the suggestions.
+        /// </summary>
+        /// <param name="followingSuggestionType">Type of the following suggestion.</param>
+        /// <param name="FollowerPersonIds">The follower person ids.</param>
+        /// <returns></returns>
+        public abstract List<PersonEntitySuggestion> GetSuggestions( FollowingSuggestionType followingSuggestionType, List<int> FollowerPersonIds );
     }
 
     public class PersonEntitySuggestion

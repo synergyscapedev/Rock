@@ -39,7 +39,8 @@ namespace RockWeb.Blocks.Follow
     [Description( "Block for editing following event types." )]
     public partial class EventDetail : RockBlock, IDetailBlock
     {
-        #region Control Methods
+
+        #region Properties
 
         public int EventId
         {
@@ -52,6 +53,10 @@ namespace RockWeb.Blocks.Follow
             get { return ViewState["EventEntityTypeId"] as int?; }
             set { ViewState["EventEntityTypeId"] = value; }
         }
+
+        #endregion
+
+        #region Control Methods
 
         protected override void LoadViewState( object savedState )
         {
@@ -109,6 +114,17 @@ namespace RockWeb.Blocks.Follow
                 followingEvent.EntityTypeId = cpEventType.SelectedEntityTypeId;
                 followingEvent.SendOnWeekends = !cbSendOnFriday.Checked;
                 followingEvent.IsNoticeRequired = cbRequireNotification.Checked;
+
+                followingEvent.FollowedEntityTypeId = null;
+                var eventComponent = followingEvent.GetEventComponent();
+                if ( eventComponent != null )
+                {
+                    var followedEntityType = EntityTypeCache.Read( eventComponent.FollowedType );
+                    if ( followedEntityType != null )
+                    {
+                        followingEvent.FollowedEntityTypeId = followedEntityType.Id;
+                    }
+                }
 
                 rockContext.SaveChanges();
 
