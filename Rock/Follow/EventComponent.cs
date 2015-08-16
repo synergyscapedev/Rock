@@ -152,8 +152,9 @@ namespace Rock.Follow
         /// <summary>
         /// Determines whether [has event happened] [the specified entity].
         /// </summary>
+        /// <param name="followingEvent">The following event.</param>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public abstract bool HasEventHappened( FollowingEventType followingEvent, IEntity entity, DateTime lastCheck );
+        public abstract bool HasEventHappened( FollowingEventType followingEvent, IEntity entity );
     }
 }

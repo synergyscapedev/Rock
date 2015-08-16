@@ -50,7 +50,7 @@ namespace Rock.Follow.Suggestion
         /// </value>
         public override Type FollowedType 
         {
-            get { return typeof( Rock.Model.Person ); }
+            get { return typeof( Rock.Model.PersonAlias ); }
         }
 
         /// <summary>

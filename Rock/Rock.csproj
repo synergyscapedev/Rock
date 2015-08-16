@@ -248,7 +248,8 @@
     <Compile Include="Follow\EventComponent.cs" />
     <Compile Include="Follow\SuggestionContainer.cs" />
     <Compile Include="Follow\EventContainer.cs" />
-    <Compile Include="Jobs\CalculateFollowingSuggestions.cs" />
+    <Compile Include="Jobs\SendFollowingEventNotifications.cs" />
+    <Compile Include="Jobs\SendFollowingSuggestions.cs" />
     <Compile Include="Jobs\SendRegistrationReminders.cs" />
     <Compile Include="Jobs\SendGroupRequirementsNotification.cs" />
     <Compile Include="Model\CodeGenerated\ConnectionActivityTypeService.cs" />
@@ -461,6 +462,7 @@
     <Compile Include="Reporting\ReportingHelper.cs" />
     <Compile Include="Reporting\DataSelect\Person\GroupParticipationSelect.cs" />
     <Compile Include="Utility\DebugHelper.cs" />
+    <Compile Include="Utility\ExtensionMethods\ExceptionExtensions.cs" />
     <Compile Include="Utility\SettingsStringBase.cs" />
     <Compile Include="Web\Utilities\WebControlHelper.cs" />
     <Compile Include="Security\Authentication\Facebook.cs">

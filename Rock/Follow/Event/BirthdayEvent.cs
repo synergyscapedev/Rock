@@ -46,7 +46,7 @@ namespace Rock.Follow.Event
         /// </value>
         public override Type FollowedType 
         {
-            get { return typeof( Rock.Model.Person ); }
+            get { return typeof( Rock.Model.PersonAlias ); }
         }
 
         /// <summary>
@@ -54,43 +54,47 @@ namespace Rock.Follow.Event
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public override bool HasEventHappened( FollowingEventType followingEvent, IEntity entity, DateTime lastCheck )
+        public override bool HasEventHappened( FollowingEventType followingEvent, IEntity entity )
         {
-            var person = entity as Person;
-            if ( person != null && person.BirthDay.HasValue && person.BirthMonth.HasValue )
+            if ( followingEvent != null && entity != null )
             {
-                int leadDays = GetAttributeValue( followingEvent, "LeadDays" ).AsInteger();
-
-                var today = RockDateTime.Today;
-                var processDate = today;
-                if ( !followingEvent.SendOnWeekends )
+                var person = entity as Person;
+                if ( person != null && person.BirthDay.HasValue && person.BirthMonth.HasValue )
                 {
-                    switch ( today.DayOfWeek )
+                    DateTime lastCheck = followingEvent.LastCheckDateTime.HasValue ? followingEvent.LastCheckDateTime.Value : DateTime.MinValue;
+                    int leadDays = GetAttributeValue( followingEvent, "LeadDays" ).AsInteger();
+
+                    var today = RockDateTime.Today;
+                    var processDate = today;
+                    if ( !followingEvent.SendOnWeekends )
                     {
-                        case DayOfWeek.Friday:
-                            leadDays += 2;
-                            break;
-                        case DayOfWeek.Saturday:
-                            processDate = processDate.AddDays( -1 );
-                            leadDays += 2;
-                            break;
-                        case DayOfWeek.Sunday:
-                            processDate = processDate.AddDays( -2 );
-                            leadDays += 2;
-                            break;
+                        switch ( today.DayOfWeek )
+                        {
+                            case DayOfWeek.Friday:
+                                leadDays += 2;
+                                break;
+                            case DayOfWeek.Saturday:
+                                processDate = processDate.AddDays( -1 );
+                                leadDays += 2;
+                                break;
+                            case DayOfWeek.Sunday:
+                                processDate = processDate.AddDays( -2 );
+                                leadDays += 2;
+                                break;
+                        }
                     }
-                }
 
-                DateTime nextBirthDay = new DateTime( today.Year, person.BirthMonth.Value, person.BirthDay.Value );
-                if ( nextBirthDay.CompareTo( today ) < 0 )
-                {
-                    nextBirthDay = nextBirthDay.AddYears( 1 );
-                }
+                    DateTime nextBirthDay = new DateTime( today.Year, person.BirthMonth.Value, person.BirthDay.Value );
+                    if ( nextBirthDay.CompareTo( today ) < 0 )
+                    {
+                        nextBirthDay = nextBirthDay.AddYears( 1 );
+                    }
 
-                if ( ( nextBirthDay.Subtract( processDate ).Days <= leadDays ) &&
-                    ( nextBirthDay.Subtract( lastCheck.Date ).Days > leadDays ) )
-                {
-                    return true;
+                    if ( ( nextBirthDay.Subtract( processDate ).Days <= leadDays ) &&
+                        ( nextBirthDay.Subtract( lastCheck.Date ).Days > leadDays ) )
+                    {
+                        return true;
+                    }
                 }
             }
 

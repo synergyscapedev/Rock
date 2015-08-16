@@ -12,7 +12,7 @@
 
                 <asp:Repeater ID="rptEntityType" runat="server" OnItemDataBound="rptEntityType_ItemDataBound">
                     <ItemTemplate>
-                        <h4><%# Eval("FriendlyName") %> Events</h4>
+                        <h4><%# Eval("FriendlyName").ToString().Replace(" Alias", "") %> Events</h4>
                         <div class="clearfix margin-l-md">    
                             <ul class="list-unstyled">
                                 <asp:Repeater ID="rptEvent" runat="server" >

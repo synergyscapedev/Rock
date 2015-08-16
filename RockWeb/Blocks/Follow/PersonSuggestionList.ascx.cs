@@ -64,14 +64,14 @@ namespace RockWeb.Blocks.Follow
             var lbFollow = new LinkButton();
             lbFollow.ID = "lbFollow";
             lbFollow.CssClass = "btn btn-default btn-sm pull-left";
-            lbFollow.Text = "<i class='fa fa-flag'></i> Unfollow";
+            lbFollow.Text = "<i class='fa fa-flag'></i> Follow";
             lbFollow.Click += lbFollow_Click;
             gSuggestions.Actions.AddCustomActionControl( lbFollow );
 
             var lbIgnore = new LinkButton();
             lbIgnore.ID = "lbIgnore";
             lbIgnore.CssClass = "btn btn-default btn-sm pull-left js-ignore";
-            lbIgnore.Text = "<i class='fa fa-flag-o'></i> Unfollow";
+            lbIgnore.Text = "<i class='fa fa-flag-o'></i> Ignore";
             lbIgnore.Click += lbIgnore_Click;
             gSuggestions.Actions.AddCustomActionControl( lbIgnore );
 
@@ -113,30 +113,53 @@ namespace RockWeb.Blocks.Follow
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         void lbFollow_Click( object sender, EventArgs e )
         {
+            // Get the suggestion ids that were selected
             var itemsSelected = new List<int>();
             gSuggestions.SelectedKeys.ToList().ForEach( f => itemsSelected.Add( f.ToString().AsInteger() ) );
 
-            if ( itemsSelected.Any() )
+            // Get the personAlias entity type
+            var personAliasEntityType = EntityTypeCache.Read( typeof( Rock.Model.PersonAlias ));
+
+            // If we have a valid current person and items were selected
+            if ( personAliasEntityType != null && CurrentPersonAliasId.HasValue && itemsSelected.Any() )
             {
-                var rockContext = new RockContext();
-                var personAliasService = new PersonAliasService( rockContext );
-                var followingService = new FollowingService( rockContext );
-
-                var paQry = personAliasService.Queryable()
-                    .Where( p => itemsSelected.Contains( p.PersonId ) )
-                    .Select( p => p.Id );
-
-                int personAliasEntityTypeId = EntityTypeCache.Read( "Rock.Model.PersonAlias" ).Id;
-                foreach ( var following in followingService.Queryable()
-                    .Where( f =>
-                        f.EntityTypeId == personAliasEntityTypeId &&
-                        paQry.Contains( f.EntityId ) &&
-                        f.PersonAliasId == CurrentPersonAlias.Id ) )
+                using ( var rockContext = new RockContext() )
                 {
-                    followingService.Delete( following );
-                }
 
-                rockContext.SaveChanges();
+                    // Get all the person alias id's that were selected
+                    var followingSuggestedService = new FollowingSuggestedService( rockContext );
+                    var selectedPersonAliasIds = followingSuggestedService
+                        .Queryable()
+                        .Where( f => itemsSelected.Contains( f.Id ) )
+                        .Select( f => f.EntityId )
+                        .Distinct()
+                        .ToList();
+
+                    // Find any of the selected person alias ids that current person is already following
+                    var followingService = new FollowingService( rockContext );
+                    var alreadyFollowing = followingService
+                        .Queryable()
+                        .Where( f =>
+                            f.EntityTypeId == personAliasEntityType.Id &&
+                            f.PersonAliasId == CurrentPersonAliasId.Value &&
+                            selectedPersonAliasIds.Contains( f.EntityId ) )
+                        .Select( f => f.EntityId )
+                        .Distinct()
+                        .ToList();
+
+                    // For each selected person alias id that the current person is not already following
+                    foreach ( var personAliasId in selectedPersonAliasIds.Where( p => !alreadyFollowing.Contains( p ) ) )
+                    {
+                        // Add a following record
+                        var following = new Following();
+                        following.EntityTypeId = personAliasEntityType.Id;
+                        following.EntityId = personAliasId;
+                        following.PersonAliasId = CurrentPersonAliasId.Value;
+                        followingService.Add( following );
+                    }
+
+                    rockContext.SaveChanges();
+                }
             }
 
             BindGrid();
@@ -144,30 +167,25 @@ namespace RockWeb.Blocks.Follow
 
         void lbIgnore_Click( object sender, EventArgs e )
         {
+            // Get the suggestion ids that were selected
             var itemsSelected = new List<int>();
             gSuggestions.SelectedKeys.ToList().ForEach( f => itemsSelected.Add( f.ToString().AsInteger() ) );
 
+            // If any items were selected
             if ( itemsSelected.Any() )
             {
-                var rockContext = new RockContext();
-                var personAliasService = new PersonAliasService( rockContext );
-                var followingService = new FollowingService( rockContext );
-
-                var paQry = personAliasService.Queryable()
-                    .Where( p => itemsSelected.Contains( p.PersonId ) )
-                    .Select( p => p.Id );
-
-                int personAliasEntityTypeId = EntityTypeCache.Read( "Rock.Model.PersonAlias" ).Id;
-                foreach ( var following in followingService.Queryable()
-                    .Where( f =>
-                        f.EntityTypeId == personAliasEntityTypeId &&
-                        paQry.Contains( f.EntityId ) &&
-                        f.PersonAliasId == CurrentPersonAlias.Id ) )
+                using ( var rockContext = new RockContext() )
                 {
-                    followingService.Delete( following );
-                }
+                    // Update the status of each suggestion to be ignored
+                    var followingSuggestedService = new FollowingSuggestedService( rockContext );
+                    foreach ( var suggestion in followingSuggestedService.Queryable()
+                        .Where( f => itemsSelected.Contains( f.Id ) ) )
+                    {
+                        suggestion.Status = FollowingSuggestedStatus.Ignored;
+                    }
 
-                rockContext.SaveChanges();
+                    rockContext.SaveChanges(); 
+                }
             }
 
             BindGrid();
@@ -201,25 +219,28 @@ namespace RockWeb.Blocks.Follow
         /// </summary>
         private void BindGrid()
         {
-            if ( CurrentPersonAlias != null )
+            var personAliasEntityType = EntityTypeCache.Read( "Rock.Model.PersonAlias" );
+            if ( personAliasEntityType != null && CurrentPersonAlias != null )
             {
                 var rockContext = new RockContext();
 
-                int personAliasEntityTypeId = EntityTypeCache.Read( "Rock.Model.PersonAlias" ).Id;
-
+                // PersonAlias query for joining the followed entity id to
                 var personAliasQry = new PersonAliasService( rockContext ).Queryable();
+
+                // Get all the people that the current person currently follows
                 var followedPersonIds = new FollowingService( rockContext ).Queryable()
                     .Where( f =>
-                        f.EntityTypeId == personAliasEntityTypeId &&
+                        f.EntityTypeId == personAliasEntityType.Id &&
                         f.PersonAliasId == CurrentPersonAlias.Id )
                     .Join( personAliasQry, s => s.EntityId, p => p.Id, ( s, p ) => p.PersonId )
                     .Distinct();
 
-                var qry = new FollowingSuggestedService( new RockContext() )
+                // Get all the person suggestions for the current person that they are not already following
+                var qry = new FollowingSuggestedService( rockContext )
                     .Queryable("SuggestionType")
                     .Where( s =>
                         s.SuggestionType != null &&
-                        s.EntityTypeId == personAliasEntityTypeId &&
+                        s.EntityTypeId == personAliasEntityType.Id &&
                         s.PersonAliasId == CurrentPersonAlias.Id )
                     .Join( personAliasQry, s => s.EntityId, p => p.Id, ( s, p ) => new { s, p } )
                     .Where( j => !followedPersonIds.Contains( j.p.PersonId ) )
@@ -235,13 +256,14 @@ namespace RockWeb.Blocks.Follow
                         NickName = j.p.Person.NickName
                     } );
 
-                // Sort
+                // Sort the result
                 SortProperty sortProperty = gSuggestions.SortProperty;
                 if ( sortProperty == null )
                 {
                     sortProperty = new SortProperty( new GridViewSortEventArgs( "LastName,NickName", SortDirection.Ascending ) );
                 }
 
+                // Bind grid to the query
                 gSuggestions.DataSource = qry.Sort( sortProperty )
                     .Select( s => new
                     {
