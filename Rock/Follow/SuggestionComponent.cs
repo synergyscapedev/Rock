@@ -141,6 +141,24 @@ namespace Rock.Follow
         }
 
         /// <summary>
+        /// Formats the entity notification.
+        /// </summary>
+        /// <param name="followingSuggestionType">Type of the following suggestion.</param>
+        /// <param name="entity">The entity.</param>
+        /// <returns></returns>
+        public virtual string FormatEntityNotification( FollowingSuggestionType followingSuggestionType, IEntity entity )
+        {
+            if ( followingSuggestionType != null )
+            {
+                var mergeFields = new Dictionary<string, object>();
+                mergeFields.Add( "Entity", entity );
+                return followingSuggestionType.EntityNotificationFormatLava.ResolveMergeFields( mergeFields );
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
         /// Gets the followed entity type identifier.
         /// </summary>
         /// <value>
@@ -155,6 +173,7 @@ namespace Rock.Follow
         /// <param name="FollowerPersonIds">The follower person ids.</param>
         /// <returns></returns>
         public abstract List<PersonEntitySuggestion> GetSuggestions( FollowingSuggestionType followingSuggestionType, List<int> FollowerPersonIds );
+
     }
 
     public class PersonEntitySuggestion

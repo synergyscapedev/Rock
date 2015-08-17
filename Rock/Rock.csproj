@@ -248,7 +248,7 @@
     <Compile Include="Follow\EventComponent.cs" />
     <Compile Include="Follow\SuggestionContainer.cs" />
     <Compile Include="Follow\EventContainer.cs" />
-    <Compile Include="Jobs\SendFollowingEventNotifications.cs" />
+    <Compile Include="Jobs\SendFollowingEvents.cs" />
     <Compile Include="Jobs\SendFollowingSuggestions.cs" />
     <Compile Include="Jobs\SendRegistrationReminders.cs" />
     <Compile Include="Jobs\SendGroupRequirementsNotification.cs" />

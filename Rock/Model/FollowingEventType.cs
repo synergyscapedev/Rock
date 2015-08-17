@@ -117,6 +117,15 @@ namespace Rock.Model
         [DataMember]
         public bool IsNoticeRequired { get; set; }
 
+        /// <summary>
+        /// Gets or sets how an entity should be formatted when included in the event notification to follower.
+        /// </summary>
+        /// <value>
+        /// The item notification lava.
+        /// </value>
+        [DataMember]
+        public string EntityNotificationFormatLava { get; set; }
+
         #endregion
 
         #region Virtual Properties

@@ -76,7 +76,7 @@ namespace RockWeb.Blocks.Follow
 
         #endregion
 
-        #region Suggestions
+        #region Events
 
         /// <summary>
         /// Handles the Add event of the rGridSuggestion control.

@@ -58,47 +58,56 @@ namespace Rock.Follow.Event
         {
             if ( followingEvent != null && entity != null )
             {
-                var person = entity as Person;
-                if ( person != null && person.BirthDay.HasValue && person.BirthMonth.HasValue )
+                var personAlias = entity as PersonAlias;
+                if ( personAlias != null && personAlias.Person != null )
                 {
-                    DateTime lastCheck = followingEvent.LastCheckDateTime.HasValue ? followingEvent.LastCheckDateTime.Value : DateTime.MinValue;
-                    int leadDays = GetAttributeValue( followingEvent, "LeadDays" ).AsInteger();
-
-                    var today = RockDateTime.Today;
-                    var processDate = today;
-                    if ( !followingEvent.SendOnWeekends )
+                    var person = personAlias.Person;
+                    if ( person.BirthDay.HasValue && person.BirthMonth.HasValue )
                     {
-                        switch ( today.DayOfWeek )
+                        DateTime lastCheck = followingEvent.LastCheckDateTime.HasValue ? followingEvent.LastCheckDateTime.Value : DateTime.MinValue;
+                        int leadDays = GetAttributeValue( followingEvent, "LeadDays" ).AsInteger();
+
+                        var today = RockDateTime.Today;
+                        var processDate = today;
+                        if ( !followingEvent.SendOnWeekends )
                         {
-                            case DayOfWeek.Friday:
-                                leadDays += 2;
-                                break;
-                            case DayOfWeek.Saturday:
-                                processDate = processDate.AddDays( -1 );
-                                leadDays += 2;
-                                break;
-                            case DayOfWeek.Sunday:
-                                processDate = processDate.AddDays( -2 );
-                                leadDays += 2;
-                                break;
+                            switch ( today.DayOfWeek )
+                            {
+                                case DayOfWeek.Friday:
+                                    leadDays += 2;
+                                    break;
+                                case DayOfWeek.Saturday:
+                                    processDate = processDate.AddDays( -1 );
+                                    leadDays += 2;
+                                    break;
+                                case DayOfWeek.Sunday:
+                                    processDate = processDate.AddDays( -2 );
+                                    leadDays += 2;
+                                    break;
+                            }
                         }
-                    }
 
-                    DateTime nextBirthDay = new DateTime( today.Year, person.BirthMonth.Value, person.BirthDay.Value );
-                    if ( nextBirthDay.CompareTo( today ) < 0 )
-                    {
-                        nextBirthDay = nextBirthDay.AddYears( 1 );
-                    }
+                        DateTime nextBirthDay = new DateTime( today.Year, person.BirthMonth.Value, person.BirthDay.Value );
+                        if ( nextBirthDay.CompareTo( today ) < 0 )
+                        {
+                            nextBirthDay = nextBirthDay.AddYears( 1 );
+                        }
 
-                    if ( ( nextBirthDay.Subtract( processDate ).Days <= leadDays ) &&
-                        ( nextBirthDay.Subtract( lastCheck.Date ).Days > leadDays ) )
-                    {
-                        return true;
+                        if ( ( nextBirthDay.Subtract( processDate ).Days <= leadDays ) &&
+                            ( nextBirthDay.Subtract( lastCheck.Date ).Days > leadDays ) )
+                        {
+                            return true;
+                        }
                     }
                 }
             }
 
             return false;
+        }
+
+        public override string FormatEntityNotification( FollowingEventType followingEvent, IEntity entity )
+        {
+            return base.FormatEntityNotification( followingEvent, entity );
         }
 
         #endregion

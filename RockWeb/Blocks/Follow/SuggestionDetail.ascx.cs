@@ -77,7 +77,7 @@ namespace RockWeb.Blocks.Follow
 
         #endregion
 
-        #region Suggestions
+        #region Events
 
         /// <summary>
         /// Handles the Click event of the btnSave control.
@@ -109,6 +109,7 @@ namespace RockWeb.Blocks.Follow
                 followingSuggestion.EntityTypeId = cpSuggestionType.SelectedEntityTypeId;
                 followingSuggestion.ReasonNote = tbReasonNote.Text;
                 followingSuggestion.ReminderDays = nbReminderDays.Text.AsIntegerOrNull();
+                followingSuggestion.EntityNotificationFormatLava = ceNotificationFormat.Text;
 
                 rockContext.SaveChanges();
 
@@ -212,6 +213,7 @@ namespace RockWeb.Blocks.Follow
             cpSuggestionType.SetValue( followingSuggestion.EntityType != null ? followingSuggestion.EntityType.Guid.ToString().ToUpper() : string.Empty );
             tbReasonNote.Text = followingSuggestion.ReasonNote;
             nbReminderDays.Text = followingSuggestion.ReminderDays.HasValue ? followingSuggestion.ReminderDays.Value.ToString() : "";
+            ceNotificationFormat.Text = followingSuggestion.EntityNotificationFormatLava;
 
             BuildDynamicControls( followingSuggestion, true );
         }

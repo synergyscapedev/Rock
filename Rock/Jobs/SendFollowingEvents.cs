@@ -36,7 +36,7 @@ namespace Rock.Jobs
     [SystemEmailField( "Following Event Notification Email Template", required: true, order: 0, key:"EmailTemplate" )]
     [SecurityRoleField( "Eligible Followers", "The group that contains individuals who should receive following event notification", true, order: 1 )]
     [DisallowConcurrentExecution]
-    public class SendFollowingEventNotifications : IJob
+    public class SendFollowingEvents : IJob
     {
         /// <summary> 
         /// Empty constructor for job initialization
@@ -45,7 +45,7 @@ namespace Rock.Jobs
         /// scheduler can instantiate the class whenever it needs.
         /// </para>
         /// </summary>
-        public SendFollowingEventNotifications()
+        public SendFollowingEvents()
         {
         }
 
@@ -69,7 +69,7 @@ namespace Rock.Jobs
 
                 // Get all the active event types
                 var eventTypes = followingEventTypeService
-                    .Queryable().AsNoTracking()
+                    .Queryable()
                     .Where( e => 
                         e.EntityTypeId.HasValue &&
                         e.IsActive )
@@ -178,7 +178,7 @@ namespace Rock.Jobs
                             if ( entityList.Any() )
                             {
                                 // Get the active event types for this entity type
-                                foreach ( var eventType in eventTypes.Where( e => e.EntityTypeId == keyVal.Key ) )
+                                foreach ( var eventType in eventTypes.Where( e => e.FollowedEntityTypeId == keyVal.Key ) )
                                 {
                                     // Get the component
                                     var eventComponent = eventType.GetEventComponent();
@@ -192,7 +192,7 @@ namespace Rock.Jobs
                                             {
                                                 // Store the event type id and the entity for later processing of notifications
                                                 eventsThatHappened.AddOrIgnore( eventType.Id, new Dictionary<int, string>() );
-                                                eventsThatHappened[eventType.Id].Add( entity.Id, string.Empty);     //TODO: Format entry
+                                                eventsThatHappened[eventType.Id].Add( entity.Id, eventComponent.FormatEntityNotification( eventType, entity ) );
                                             }
                                         }
                                     }
@@ -229,7 +229,7 @@ namespace Rock.Jobs
                             // Get the EntityTypeId for this event type
                             int entityTypeId = eventTypes
                                 .Where( e => e.Id == eventType.Key )
-                                .Select( e => e.EntityTypeId.Value )
+                                .Select( e => e.FollowedEntityTypeId.Value )
                                 .FirstOrDefault();
 
                             // Find all the entities with this event type that the person follows

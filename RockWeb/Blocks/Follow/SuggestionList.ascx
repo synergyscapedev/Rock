@@ -7,7 +7,7 @@
 
         <div class="panel panel-block">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="fa fa-credit-card"></i> Suggestion List</h1>
+                <h1 class="panel-title"><i class="fa fa-flag-o"></i> Suggestion List</h1>
             </div>
             <div class="panel-body">
 

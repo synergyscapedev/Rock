@@ -100,6 +100,15 @@ namespace Rock.Model
         }
         private bool _isActive = true;
 
+        /// <summary>
+        /// Gets or sets how an entity should be formatted when included in the suggestion notification to follower.
+        /// </summary>
+        /// <value>
+        /// The item notification lava.
+        /// </value>
+        [DataMember]
+        public string EntityNotificationFormatLava { get; set; }
+
         #endregion
 
         #region Virtual Properties

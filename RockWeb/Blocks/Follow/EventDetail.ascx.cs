@@ -114,6 +114,7 @@ namespace RockWeb.Blocks.Follow
                 followingEvent.EntityTypeId = cpEventType.SelectedEntityTypeId;
                 followingEvent.SendOnWeekends = !cbSendOnFriday.Checked;
                 followingEvent.IsNoticeRequired = cbRequireNotification.Checked;
+                followingEvent.EntityNotificationFormatLava = ceNotificationFormat.Text;
 
                 followingEvent.FollowedEntityTypeId = null;
                 var eventComponent = followingEvent.GetEventComponent();
@@ -228,6 +229,7 @@ namespace RockWeb.Blocks.Follow
             cpEventType.SetValue( followingEvent.EntityType != null ? followingEvent.EntityType.Guid.ToString().ToUpper() : string.Empty );
             cbSendOnFriday.Checked = !followingEvent.SendOnWeekends;
             cbRequireNotification.Checked = followingEvent.IsNoticeRequired;
+            ceNotificationFormat.Text = followingEvent.EntityNotificationFormatLava;
 
             BuildDynamicControls( followingEvent, true );
         }

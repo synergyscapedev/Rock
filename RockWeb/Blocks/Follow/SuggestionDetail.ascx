@@ -8,7 +8,7 @@
             <asp:HiddenField ID="hfSuggestionId" runat="server" />
 
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="fa fa-credit-card"></i>
+                <h1 class="panel-title"><i class="fa fa-flag-o"></i>
                     <asp:Literal ID="lActionTitle" runat="server" /></h1>
 
                 <div class="panel-labels">
@@ -62,6 +62,13 @@
                         </div>
                         <div class="col-md-6">
                             <asp:PlaceHolder ID="phAttributes" runat="server" EnableViewState="false" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <Rock:CodeEditor ID="ceNotificationFormat" runat="server" EditorHeight="200" EditorMode="Liquid" EditorTheme="Rock" Label="Notification Format"
+                                Help="How the entity should be formatted in the following suggestion notification email when this suggestion is made for the entity. The entity is available to Lava as an 'Entity' object." />
                         </div>
                     </div>
 

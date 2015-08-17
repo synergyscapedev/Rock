@@ -7,7 +7,7 @@
 
         <div class="panel panel-block">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="fa fa-flag"></i> Your Following Suggestions</h1>
+                <h1 class="panel-title"><i class="fa fa-flag-o"></i> Your Following Suggestions</h1>
             </div>
             <div class="panel-body">
                 <div class="grid grid-panel">

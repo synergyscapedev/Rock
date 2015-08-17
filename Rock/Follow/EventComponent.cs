@@ -142,6 +142,24 @@ namespace Rock.Follow
         }
 
         /// <summary>
+        /// Formats the entity notification.
+        /// </summary>
+        /// <param name="followingEvent">The following event.</param>
+        /// <param name="entity">The entity.</param>
+        /// <returns></returns>
+        public virtual string FormatEntityNotification( FollowingEventType followingEvent, IEntity entity )
+        {
+            if ( followingEvent != null )
+            {
+                var mergeFields = new Dictionary<string, object>();
+                mergeFields.Add( "Entity", entity );
+                return followingEvent.EntityNotificationFormatLava.ResolveMergeFields( mergeFields );
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
         /// Gets the followed entity type identifier.
         /// </summary>
         /// <value>
@@ -156,5 +174,6 @@ namespace Rock.Follow
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
         public abstract bool HasEventHappened( FollowingEventType followingEvent, IEntity entity );
+
     }
 }
