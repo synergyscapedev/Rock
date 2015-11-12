@@ -8,6 +8,7 @@
     });
 </script>
 
+
 <asp:UpdatePanel ID="upContent" runat="server">
 <ContentTemplate>
 
@@ -25,16 +26,19 @@
             <div class="scroller">
 
                 <div class="control-group checkin-body-container">
-                    <label class="control-label">Select Person</label>
-                    <div class="controls">
+                    <label class="control-label">Select Person(s)</label>
+                    <div class="controls checkin-timelist btn-group" data-toggle="buttons-checkbox">
                         <asp:Repeater ID="rSelection" runat="server" OnItemCommand="rSelection_ItemCommand" OnItemDataBound="rSelection_ItemDataBound">
-                            <ItemTemplate>
-                                <Rock:BootstrapButton ID="lbSelect" runat="server" Text='<%# Container.DataItem.ToString() %>' CommandArgument='<%# Eval("Person.Id") %>' CssClass="btn btn-primary btn-large btn-block btn-checkin-select" DataLoadingText="Loading..." />
+                                <ItemTemplate>
+                                <button type="button" person-id='<%# Eval("Person.Id") %>' class="btn btn-default btn-lg btn-checkbox">
+                                    <i class="fa fa-square-o"></i>
+                                    <div><%# Container.DataItem.ToString() %></div>
+                                </button>
                             </ItemTemplate>
                         </asp:Repeater>
                     </div>
                 </div>
-
+                  <asp:HiddenField ID="hfTimes" runat="server"></asp:HiddenField>
             </div>
         </div>
 
@@ -46,6 +50,8 @@
         <div class="checkin-actions">
             <asp:LinkButton CssClass="btn btn-default" ID="lbBack" runat="server" OnClick="lbBack_Click" Text="Back" />
             <asp:LinkButton CssClass="btn btn-default" ID="lbCancel" runat="server" OnClick="lbCancel_Click" Text="Cancel" />
+           <%-- <asp:LinkButton CssClass="btn btn-Info" ID="lbSave" runat="server" OnClick="lbSave_Click" Text="Save" />--%>
+            <asp:LinkButton CssClass="btn btn-primary" ID="lbSelect" runat="server" data-loading-text="Printing..." OnClientClick="return GetTimeSelection();" OnClick="lbSelect_Click" Text="Check-in" />
         </div>
     </div>
 

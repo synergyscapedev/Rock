@@ -73,6 +73,29 @@ namespace RockWeb.Blocks.CheckIn
                     }
                     else
                     {
+
+                        string script = string.Format(@"
+    <script>
+        function GetTimeSelection() {{
+            var ids = '';
+            $('div.checkin-timelist button.active').each( function() {{
+                ids += $(this).attr('person-id') + ',';
+            }});
+            if (ids == '') {{
+                bootbox.alert('Please select at least one time');
+                return false;
+            }}
+            else
+            {{
+                $('#{0}').button('loading')
+                $('#{1}').val(ids);
+                return true;
+            }}
+        }}
+    </script>
+", lbSelect.ClientID, hfTimes.ClientID);
+                        Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "SelectTime", script);
+
                         rSelection.DataSource = family.People
                             .OrderByDescending( p => p.FamilyMember )
                             .ThenBy( p => p.Person.BirthYear )
@@ -119,6 +142,67 @@ namespace RockWeb.Blocks.CheckIn
             }
         }
 
+        protected void lbSelect_Click(object sender, EventArgs e)
+        {
+            if (KioskCurrentlyActive)
+            {
+                var family = CurrentCheckInState.CheckIn.Families.Where(f => f.Selected).FirstOrDefault();
+                var selectedPeople = hfTimes.Value.SplitDelimitedValues();
+
+                foreach (var person in selectedPeople)
+                {
+                    int id = int.Parse(person);
+                    var sp = family.People.Where(p => p.Person.Id == id).FirstOrDefault();
+                    if (sp != null)
+                        sp.Selected = true;
+
+                    var groupTypes = sp.GroupTypes.FirstOrDefault();
+                    if (groupTypes != null)
+                        groupTypes.Selected = true;
+
+                    var groups = groupTypes.Groups.FirstOrDefault();
+                    if (groups != null)
+                        groups.Selected = true;
+
+                    var location = groups.Locations.FirstOrDefault();
+                    if (location != null)
+                        location.Selected = true;
+
+                    var schedule = location.Schedules.FirstOrDefault();
+                    if (schedule != null)
+                        schedule.Selected = true;
+
+                }
+
+                ProcessSelection(maWarning);
+
+                //var location = CurrentCheckInState.CheckIn.Families.Where(f => f.Selected)
+                //    .SelectMany(f => f.People.Where(p => p.Selected)
+                //       .SelectMany(p => p.GroupTypes.Where(t => t.Selected)
+                //          .SelectMany(t => t.Groups.Where(g => g.Selected)
+                //             .SelectMany(g => g.Locations.Where(l => l.Selected)))))
+                //    .FirstOrDefault();
+
+                //if (location != null)
+                //{
+                //    foreach (var scheduleId in hfTimes.Value.SplitDelimitedValues())
+                //    {
+                //        int id = Int32.Parse(scheduleId);
+                //        var schedule = location.Schedules.Where(s => s.Schedule.Id == id).FirstOrDefault();
+                //        if (schedule != null)
+                //        {
+                //            schedule.Selected = true;
+                //        }
+                //    }
+
+                //    ProcessSelection(maWarning);
+                //}
+            }
+        }
+        protected void lbSave_Click(object sender, EventArgs e)
+        {
+            //GoBack();
+        }
         protected void lbBack_Click( object sender, EventArgs e )
         {
             GoBack();
@@ -142,6 +226,10 @@ namespace RockWeb.Blocks.CheckIn
 
         protected void ProcessSelection()
         {
+            var obj = CurrentCheckInState.CheckIn.Families.Where(f => f.Selected)
+                        .FirstOrDefault();
+
+
             ProcessSelection( maWarning, () => CurrentCheckInState.CheckIn.Families.Where( f => f.Selected )
                 .SelectMany( f => f.People.Where( p => p.Selected )
                     .SelectMany( p => p.GroupTypes.Where( t => !t.ExcludedByFilter ) ) )
